@@ -1,0 +1,3 @@
+../Drivers/Audio_DAC/audiodac.c:12:6:DAC_Register_Write	1
+../Drivers/Audio_DAC/audiodac.c:22:9:DAC_Register_Read	1
+../Drivers/Audio_DAC/audiodac.c:30:6:DAC_Register_Init	1

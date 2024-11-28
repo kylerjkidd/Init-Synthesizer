@@ -1,0 +1,14 @@
+../Core/Src/synth.c:20:6:Digital_Pot_Wiper_Set	13
+../Core/Src/synth.c:101:6:Synth_Reset_Initalize	1
+../Core/Src/synth.c:159:5:Synth_Initialize_Preset	1
+../Core/Src/synth.c:261:6:Gate_Control	1
+../Core/Src/synth.c:268:6:Mixer_Digital_Pot_Control	1
+../Core/Src/synth.c:276:6:VCA_Mod_Source_Control	1
+../Core/Src/synth.c:287:6:VCA_Bypass_Switch_Control	1
+../Core/Src/synth.c:298:6:VCA_Digital_Pot_Control	1
+../Core/Src/synth.c:306:6:Filter_Mod_Source_Control	1
+../Core/Src/synth.c:318:6:Filter_Digital_Pot_Control	1
+../Core/Src/synth.c:327:6:LFO_Output_Control	1
+../Core/Src/synth.c:338:6:LFO_Digital_Pot_Control	1
+../Core/Src/synth.c:345:6:ENV_Mode_Control	1
+../Core/Src/synth.c:359:6:ENV_Digital_Pot_Control	1

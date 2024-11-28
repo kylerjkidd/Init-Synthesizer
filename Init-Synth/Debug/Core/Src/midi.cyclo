@@ -1,0 +1,2 @@
+../Core/Src/midi.c:15:6:MIDI_Decode_Handler	4
+../Core/Src/midi.c:58:6:HAL_UART_RxCpltCallback	2
