@@ -5,14 +5,14 @@
  *      Author: Implacable
  */
 
-//#include "main.h"
 #include "stdbool.h"
 #include "spi.h"
 
 #include "synth.h"
 #include "gpioxpndr.h"
+#include "system.h"
 
-//extern uint16_t gpio_reg;
+extern System sys;
 Synth SynthParameters;// = {10, 3.14};
 
 uint16_t gpio_reg = 0x0000;
@@ -22,17 +22,6 @@ void Digital_Pot_Wiper_Set(int pot_address, int wiper_code, int invert){
 	uint8_t spi_buf[1];
 	GPIO_TypeDef* CSn_PORT;
 	uint16_t CSn_PIN;
-
-	//CSn_PORT = RED_LED_PORT;
-	//CSn_PIN = RED_LED_PIN;
-
-	//HAL_GPIO_WritePin(CSn_PORT, CSn_PIN, GPIO_PIN_SET); // red
-
-//	if(invert == 1){
-//		 spi_buf[0] = (~wiper_code) & 0x7F;
-//		 //spi_buf[0] = (~wiper_code)-128;
-//	}
-//	else spi_buf[0] = wiper_code & 0x7F;
 
 	//if invert bit is set, the command value is inverted
 	spi_buf[0] = invert ? ~(wiper_code) : wiper_code;
@@ -98,7 +87,7 @@ void Digital_Pot_Wiper_Set(int pot_address, int wiper_code, int invert){
 	return;
 }
 
-void Synth_Reset_Initalize(){
+void Synth_Reset_Initialize(){
 
 	HAL_GPIO_WritePin(TP0_PORT, TP0_PIN, SET); // test point
 
@@ -117,39 +106,6 @@ void Synth_Reset_Initalize(){
 
 	// set gate low
 	Gate_Control(0);
-
-//	//gpio_mask1 = GPIO_State_Change(0, gpio_mask1, 5, true);
-//
-//	// initialize VCF switches
-//	//HAL_GPIO_WritePin(VCF_CV_SW_PORT,   VCF_CV_SW_PIN,   SET);
-//	//HAL_GPIO_WritePin(VCF_SEL_PORT,     VCF_SEL_PIN,     SET);
-//
-//	gpio_reg = GPIO_State_Change(VCF_CV_SW_PORT, gpio_reg, VCF_CV_SW_PIN, true);
-//	gpio_reg = GPIO_State_Change(VCF_SEL_PORT, gpio_reg, VCF_SEL_PIN, true);
-//
-//	// initialize envelope switches
-//	//HAL_GPIO_WritePin(ENV_EN_PORT,      ENV_EN_PIN,      SET);
-//	//HAL_GPIO_WritePin(ENV_LP_PORT,      ENV_LP_PIN,      SET);
-//	//HAL_GPIO_WritePin(ENV_POL_PORT,     ENV_POL_PIN,     SET);
-//
-//	gpio_reg = GPIO_State_Change(ENV_EN_PORT, gpio_reg, ENV_EN_PIN, true);
-//	gpio_reg = GPIO_State_Change(ENV_LP_PORT, gpio_reg, ENV_LP_PIN, true);
-//	gpio_reg = GPIO_State_Change(ENV_POL_PORT, gpio_reg, ENV_POL_PIN, true);
-//
-//	// initialize LFO switches
-//	//HAL_GPIO_WritePin(LFO_SEL_PORT,     LFO_SEL_PIN,     SET);
-//	//HAL_GPIO_WritePin(VCA_SEL_PORT,     VCA_SEL_PIN,     SET);
-//
-//	gpio_reg = GPIO_State_Change(LFO_SEL_PORT, gpio_reg, LFO_SEL_PIN, true);
-//	//gpio_reg = GPIO_State_Change(VCA_SEL_PORT, gpio_reg, VCA_SEL_PIN, true);
-//
-//	// initialize VCA switches
-//	//HAL_GPIO_WritePin(VCA_SEL_PORT,     VCA_SEL_PIN,     SET);
-//	HAL_GPIO_WritePin(VCA_CV_SW_PORT,   VCA_CV_SW_PIN,   SET);
-//	HAL_GPIO_WritePin(VCA_BYP_SW_PORT,  VCA_BYP_SW_PIN,  SET);
-//	HAL_GPIO_WritePin(VCA_BYP_PORT,     VCA_BYP_PIN,     SET);
-//
-//	gpio_reg = GPIO_State_Change(VCA_BYP_SW_PORT, gpio_reg, VCA_BYP_SW_PIN, true);
 
 	Synth_Initialize_Preset();
 
@@ -246,17 +202,6 @@ int Synth_Initialize_Preset(){
 
 	return 0;
 }
-
-//void Gate_Control(int gate_state){
-//
-//	GPIO_PinState pin_state;
-//
-//	pin_state = gate_state ? GPIO_PIN_SET : GPIO_PIN_RESET;
-//
-//	HAL_GPIO_WritePin(GATE_PORT, GATE_PIN, GPIO_PIN_SET);
-//
-//	return;
-//}
 
 void Gate_Control(int gate_state){
 

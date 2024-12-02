@@ -8,12 +8,17 @@
 #ifndef SRC_SYNTH_H_
 #define SRC_SYNTH_H_
 
-#define TP0_PORT GPIOB
-#define TP0_PIN  GPIO_PIN_5
-
 // gate signal
 #define GATE_PORT 0
 #define GATE_PIN 3
+
+// toggle polarity of MIDI UART output
+#define MIDI_TX_POL_PORT 0
+#define MIDI_TX_POL_PIN 3
+
+// enable transmit out of MIDI port
+#define MIDI_TX_EN_PORT 0
+#define MIDI_TX_EN_PIN 4
 
 // gate signal
 //#define GATE_PORT GPIOA
@@ -116,52 +121,6 @@
 #define ENV_POL_PORT 1
 #define ENV_POL_PIN 3
 
-/* uint8_t GPIO_State_Change(int reg_bank, uint8_t gpio_reg, uint8_t bit_position, bool state){
-
-// chip enable (active low) for filter mod source switch
-#define VCF_CV_SW_PORT GPIOC
-#define VCF_CV_SW_PIN GPIO_PIN_1
-
-// switch input for filter mod source
-#define VCF_SEL_PORT GPIOC
-#define VCF_SEL_PIN GPIO_PIN_0
-
-// chip enable (active low) for LFO output switch
-#define LFO_EN_PORT GPIOA
-#define LFO_EN_PIN GPIO_PIN_2
-
-// switch input for LFO output select
-#define LFO_SEL_PORT GPIOA
-#define LFO_SEL_PIN GPIO_PIN_1
-
-// chip enable (active low) for VCA mod source switch
-#define VCA_CV_SW_PORT GPIOC
-#define VCA_CV_SW_PIN GPIO_PIN_14
-
-// switch input for VCA mod source select
-#define VCA_SEL_PORT GPIOC
-#define VCA_SEL_PIN GPIO_PIN_15
-
-// chip enable (active low) for VCA bypass switch
-#define VCA_BYP_SW_PORT GPIOA
-#define VCA_BYP_SW_PIN GPIO_PIN_3
-
-// switch input for VCA bypass select
-#define VCA_BYP_PORT GPIOA
-#define VCA_BYP_PIN GPIO_PIN_6
-
-// chip enable (active low) for ENV switches
-#define ENV_EN_PORT GPIOA
-#define ENV_EN_PIN GPIO_PIN_0
-
-// switch input for ENV loop select
-#define ENV_LP_PORT GPIOC
-#define ENV_LP_PIN GPIO_PIN_3
-
-// switch input for ENV output polarity select
-#define ENV_POL_PORT GPIOC
-#define ENV_POL_PIN GPIO_PIN_2
-*/
 
 typedef struct {
 
@@ -240,7 +199,7 @@ extern Synth SynthParameters;
 void Gate_Control(int gate_state);
 
 void Digital_Pot_Wiper_Set(int pot_address, int wiper_code, int invert);
-void Synth_Reset_Initalize();
+void Synth_Reset_Initialize();
 
 int Synth_Initialize_Preset();
 

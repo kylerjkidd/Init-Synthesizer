@@ -1,7 +1,7 @@
-../Core/Src/note.c:26:7:Calculate_Frequency	16	static
-../Core/Src/note.c:30:9:Synthesize_Sine_Wave_FM	48	static
-../Core/Src/note.c:38:9:Synthesize_Sine_Wave	32	static
-../Core/Src/note.c:47:9:Synthesize_Pulse_Wave	32	static
-../Core/Src/note.c:56:9:Synthesize_Triangle_Wave	24	static
-../Core/Src/note.c:72:9:Synthesize_Sawtooth_Wave	24	static
-../Core/Src/note.c:80:5:Waveform_Synthesis_Handler	64048	static
+../Core/Src/note.c:22:7:Calculate_Frequency	16	static
+../Core/Src/note.c:26:9:Synthesize_Sine_Wave_FM	48	static
+../Core/Src/note.c:34:9:Synthesize_Sine_Wave	32	static
+../Core/Src/note.c:43:9:Synthesize_Pulse_Wave	32	static
+../Core/Src/note.c:52:9:Synthesize_Triangle_Wave	24	static
+../Core/Src/note.c:68:9:Synthesize_Sawtooth_Wave	24	static
+../Core/Src/note.c:76:5:Waveform_Synthesis_Handler	32048	static

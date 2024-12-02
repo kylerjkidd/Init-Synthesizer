@@ -22,6 +22,7 @@
 #include "i2c.h"
 #include "i2s.h"
 #include "spi.h"
+#include "tim.h"
 #include "usart.h"
 #include "usb_device.h"
 #include "gpio.h"
@@ -44,6 +45,7 @@
 #include "midi.h"
 #include "note.h"
 #include "eeprom.h"
+#include "system.h"
 
 /* USER CODE END Includes */
 
@@ -54,18 +56,6 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
-#define RED_LED_PORT GPIOA
-#define RED_LED_PIN  GPIO_PIN_10
-
-#define GRN_LED_PORT GPIOA
-#define GRN_LED_PIN  GPIO_PIN_9
-
-#define TP0_PORT GPIOB
-#define TP0_PIN  GPIO_PIN_5
-
-#define USB_RENUM_PORT GPIOB
-#define USB_RENUM_PIN  GPIO_PIN_5
 
 /* USER CODE END PD */
 
@@ -89,35 +79,7 @@ void SystemClock_Config(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
-// communication buffers
-uint8_t usb_vcp_buffer[64];
-uint8_t midi_buf[3];
-uint8_t temp_buf[3];
-int temp_buf_index = 0;
-
-// communication status flags
-int usb_data_present = 0;
-int midi_data_present = 0;
-
-// midi variables
-int note_status_bit = 0;
-int midi_note_input = 0;
-int midi_note_velocity = 0;
-
-int gate = 0;
-int velocity_enable = 0;
-
-// GPIO expander output ports
-uint8_t gpio_mask1 = 0x00;
-uint8_t gpio_mask2 = 0x00;
-//uint16_t gpio_reg = 0x0000;
-//int fm1_enable = 0;
-//int fm2_enable = 0;
-
-
-
-
-
+extern System sys;
 
 /* USER CODE END 0 */
 
@@ -156,64 +118,29 @@ int main(void)
   MX_SPI3_Init();
   MX_USB_Device_Init();
   MX_USART2_UART_Init();
+  MX_TIM6_Init();
   /* USER CODE BEGIN 2 */
 
-  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, SET); // enable analog power supply
+  HAL_TIM_Base_Start_IT(&htim6);
 
-  DAC_Register_Init();
+  System_Reset_Initialize();
 
-  DAC_Register_Write(0x40, 0x3F);
-  DAC_Register_Write(0x44, 0x3F);
-
-  DAC_Register_Write(0x41, 0x3F);
-  DAC_Register_Write(0x45, 0x3F);
-
-  GPIO_Register_Init();
-
-  Synth_Reset_Initalize();
-
-  //HAL_Delay(5000);
-
-  //Synth_Initialize_Preset();
+  Synth_Reset_Initialize();
 
   //HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, SET); // trigger gate
   //HAL_Delay(500);
   HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, RESET); // set gate low
   //HAL_GPIO_WritePin(TP0_PORT, TP0_PIN, SET); // test point
 
+  //HAL_GPIO_WritePin(RED_LED_PORT, RED_LED_PIN, sys.red_led_state); // red
+
   HAL_GPIO_WritePin(RED_LED_PORT, RED_LED_PIN, SET); // red
 
-  //float input = 3.14;
-
-  //Convert_Float_to_Binary(input);
-  //Convert_Binary_to_Float();
-
-  //Digital_Pot_Wiper_Set(2,129,0);
-
-  //CDC_Transmit_FS((uint8_t *) data, strlen (data));
-
-  //HAL_UART_Receive(&huart2, temp_buf, 5);
-
-  HAL_UART_Receive_IT(&huart2, temp_buf , 1); // set up interrupt for MIDI/serial input
+  HAL_UART_Receive_IT(&huart2, sys.temp_buf , 1); // set up interrupt for MIDI/serial input
   //HAL_UART_Receive_IT(&huart3, midi_buf, 3);
 
   uint8_t data[] = "INIT-READY\n";
   HAL_UART_Transmit(&huart2, data, 10, 1000);
-
-  //HAL_UART_Receive(&huart2, data, 3, HAL_MAX_DELAY);
-  //HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_9); // green
-  //GPIO_Init();
-  //GPIO_Register_Init();
-
-  //gpio_reg = GPIO_State_Change(0, gpio_reg, 2, true);
-
-  //gpio_reg = GPIO_State_Change(1, gpio_reg, 2, true);
-
-  //void GPIO_State_Change(int reg_bank, uint8_t *gpio_reg, uint8_t bit_position, bool state);
-
-  //gpio_mask1 = GPIO_State_Change(0, gpio_mask1, 5, true);
-
-  //HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, SET); // enable analog power supply
 
   //UART_Test();
 
@@ -224,70 +151,23 @@ int main(void)
   while (1)
   {
 
-	  //int check = 0;
-	  //CDC_Transmit_FS((uint8_t *) data, strlen (data));
 
-/*
-		if (temp[0] == '\n')
-		{
-	        	memcpy (ser_buf, midi_buf, indx);
-			indx = 0;
-		}
-*/
-
-//	  HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_9); // green
-//	  //HAL_Delay(1000);
-//	  HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_8); // trigger gate
-//	  HAL_GPIO_TogglePin(TP0_PORT, TP0_PIN); // test point
-//
-//	  HAL_Delay(10000);
-//
-//	  HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_8); // trigger gate
-//	  HAL_GPIO_TogglePin(TP0_PORT, TP0_PIN); // test point
-//	  HAL_Delay(10000);
-
-
-	  //HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_9); // green
-	  //HAL_Delay(1000);
-
-	  //gate = 1;
-	  //Waveform_Synthesis_Handler(80, 127);
-
-//	  while(check!=1){
-//		  check = Serial_Command_Handler_t();
-//	  }
-
-	  //while(HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13)!=1) {};
-
-	  //check = Serial_Command_Handler_t();
-
-//	  if(check == 1){
-//
-//		  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET);
-//		  HAL_Delay(2000);
-//		  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);
-//		  check = 0;
-//		  memset (usb_vcp_buffer, '\0', 64); // to clear buffer of old data
-//
-//	  }
-
-//	  if (temp[0] == '\n') // look for newline on serial
-//	  {
-//		  memcpy (cmd_buf, midi_buf, indx);
-//		  indx = 0;
-//	  }
-
-
-	  if((midi_data_present == 1)){
+	  if(sys.midi_data_present == 1){
 		  MIDI_Decode_Handler();
 	  }
 
-	  if((usb_data_present == 1)){
+	  if(sys.usb_data_present == 1){
 		  Serial_Command_Handler();
 	  }
 
-	  Gate_Control(note_status_bit == 1 ? 1 : 0);
+	  Gate_Control(sys.note_status_bit == 1 ? 1 : 0);
 
+	  if((sys.note_status_bit == 1)){
+
+		  Waveform_Synthesis_Handler(sys.midi_note_input, sys.midi_note_velocity);
+	  }
+
+	  //Waveform_Synthesis_Handler(69, 127);
 //
 //	  if(HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13)==1){
 //		  CDC_Transmit_FS((uint8_t *) data, strlen (data));

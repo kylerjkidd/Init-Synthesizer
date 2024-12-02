@@ -23,6 +23,8 @@
 
 /* USER CODE BEGIN INCLUDE */
 
+#include "system.h"
+
 /* USER CODE END INCLUDE */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -49,9 +51,6 @@
   */
 
 /* USER CODE BEGIN PRIVATE_TYPES */
-
-extern uint8_t usb_vcp_buffer[64]; // import buffer from main
-extern int usb_data_present; // import state from main
 
 /* USER CODE END PRIVATE_TYPES */
 
@@ -267,11 +266,11 @@ static int8_t CDC_Receive_FS(uint8_t* Buf, uint32_t *Len)
   USBD_CDC_SetRxBuffer(&hUsbDeviceFS, &Buf[0]);
   USBD_CDC_ReceivePacket(&hUsbDeviceFS);
 
-  usb_data_present = 1;
+  sys.usb_data_present = 1;
 
   uint8_t len = (uint8_t) *Len;
-  memset (usb_vcp_buffer, '\0', 64); // to clear buffer of old data
-  memcpy (usb_vcp_buffer, Buf, len); // copy data from receive buffer to program buffer
+  memset (sys.usb_vcp_buffer, '\0', 64); // to clear buffer of old data
+  memcpy (sys.usb_vcp_buffer, Buf, len); // copy data from receive buffer to program buffer
   memset (Buf, '\0', 64); // clear receive buffer
 
   return (USBD_OK);

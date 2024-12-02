@@ -5,37 +5,46 @@
  *      Author: Implacable
  */
 
+#include "usart.h"
 #include "stdint.h"
 #include "string.h"
 #include "gpio.h"
+#include "usbd_cdc_if.h"
+#include "tim.h"
 
 #include "synth.h"
 #include "serial.h"
+#include "system.h"
+
+extern System sys;
 
 void Serial_Command_Handler(){
 
     //usb_data_present = 0;
 	int error_check = 0;
+	//int sys.value_returned = 0;
+
+	sys.value_returned = 0;
 
 	int command_byte;
 	int address_byte;
 	int data_byte;
 
-    if(usb_data_present == 1){
-        usb_data_present = 0;
+    if(sys.usb_data_present == 1){
+    	sys.usb_data_present = 0;
 
-        command_byte = usb_vcp_buffer[0];
-        address_byte = usb_vcp_buffer[1];
-        data_byte    = usb_vcp_buffer[2];
+        command_byte = sys.usb_vcp_buffer[0];
+        address_byte = sys.usb_vcp_buffer[1];
+        data_byte    = sys.usb_vcp_buffer[2];
 
     }
 
-    if(midi_data_present == 1){
-    	midi_data_present = 0;
+    if(sys.midi_data_present == 1){
+    	sys.midi_data_present = 0;
 
-        command_byte = midi_buf[0];
-        address_byte = midi_buf[1];
-        data_byte    = midi_buf[2];
+        command_byte = sys.midi_buf[0];
+        address_byte = sys.midi_buf[1];
+        data_byte    = sys.midi_buf[2];
 
     }
 
@@ -82,6 +91,7 @@ void Serial_Command_Handler(){
 
         	for(int i=0; i <4 ; i++){
         	HAL_GPIO_TogglePin(GRN_LED_PORT, GRN_LED_PIN);
+        	HAL_GPIO_TogglePin(RED_LED_PORT, RED_LED_PIN);
         	HAL_Delay(125);
         	}
 
@@ -103,19 +113,19 @@ void Serial_Command_Handler(){
         default:
             // do nothing on invalid command
 
-        	//Command_Error();
         	error_check = 1;
 
             break;
     }
 
-    error_check ? Command_Error() : Command_Success();
+    //error_check ? Command_Error() : Command_Success();
+    error_check ? Command_Blink_Status_LED(1) : Command_Blink_Status_LED(0);
 
-    memset (usb_vcp_buffer, '\0', 64); // clear buffer of old data
+    Command_Response_Handler(error_check, command_byte, address_byte, data_byte);
+
+    memset (sys.usb_vcp_buffer, '\0', 64); // clear buffer of old data
 
 }
-
-//HAL_GPIO_TogglePin(RED_LED_PORT, RED_LED_PIN);
 
 // ===========================================================================================================
 // VCA functions
@@ -127,7 +137,7 @@ int VCA_Command_Handler(int address, int data){
     switch(address) {
         case '1': // VCA modulation offset
 
-        	error_check = Command_Range_Check_Error(data, 255);
+        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 255, 0, 0);
 
             if (error_check == 0) {
                 SynthParameters.vca_offset = data;
@@ -137,7 +147,7 @@ int VCA_Command_Handler(int address, int data){
         	return error_check;
         case '2': // VCA modulation intensity
 
-        	error_check = Command_Range_Check_Error(data, 255);
+        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 255, 0, 0);
 
             if (error_check == 0) {
                 SynthParameters.vca_cv_intensity = data;
@@ -147,7 +157,7 @@ int VCA_Command_Handler(int address, int data){
         	return error_check;
         case '3': // VCA modulation control
 
-        	error_check = Command_Option_Check_Error(data, 3);
+        	error_check = Command_Error_Check(OPTION_BOX_CHECK, data, 3, 0, 0);
 
             if (error_check == 0) {
                 SynthParameters.vca_mod_source = data;
@@ -158,12 +168,23 @@ int VCA_Command_Handler(int address, int data){
         	return error_check;
         case '4': // VCA signal bypass control
 
-        	error_check = Command_Range_Check_Error(data, 1);
+        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 1, 0, 0);
 
             if (error_check == 0) {
                 SynthParameters.vca_bypass = data;
                 VCA_Mod_Source_Decode(SynthParameters.vca_bypass);
                 VCA_Bypass_Switch_Control();
+            }
+
+        	return error_check;
+        case '5': // read back setting value
+
+        	error_check = Command_Error_Check(NUMBER_CHECK, data, 4, 0, 0);
+
+        	//VCA_Value_Query(data);
+            if (error_check == 0) {
+            	VCA_Value_Query(data);
+                sys.value_returned = 1; // tell the serial handler a response has been sent
             }
 
         	return error_check;
@@ -174,6 +195,37 @@ int VCA_Command_Handler(int address, int data){
     }
 
     return 1;
+}
+
+void VCA_Value_Query(int data){
+
+	uint8_t return_data[3] = {'A', data , 0};
+
+    switch(data) {
+        case '1': // VCA modulation offset
+        	return_data[2] = SynthParameters.vca_offset;
+            break;
+        case '2': // VCA modulation intensity
+        	return_data[2] = SynthParameters.vca_cv_intensity;
+            break;
+        case '3': // VCA modulation control
+        	return_data[2] = SynthParameters.vca_mod_source;
+            break;
+        case '4': // VCA signal bypass control
+        	return_data[2] = SynthParameters.vca_bypass;
+            break;
+        default:  // do nothing on invalid command
+
+            break;
+    }
+
+    CDC_Transmit_FS(return_data, 3); // transmit return message
+
+    if (sys.midi_tx_en == 1) { // send return message if enabled
+        HAL_UART_Transmit(&huart2, return_data, 3, 1000);
+    }
+
+	return;
 }
 
 void VCA_Mod_Source_Decode(int data){
@@ -423,7 +475,7 @@ int Mixer_Command_Handler(int address, int data){
         	error_check = Command_Range_Check_Error(data, 1);
 
             if (error_check == 0) {
-            	velocity_enable = data;
+            	sys.velocity_enable = data;
             }
 
         	return error_check;
@@ -516,7 +568,7 @@ int Preset_Command_Handler(int address, int data){
         default:
             // do nothing on invalid command
 
-        	Command_Error();
+        	//Command_Error();
 
         	return 1;
     }
@@ -559,7 +611,7 @@ void Oscillator_1_Command_Handler(int address, int data){
         default:
             // do nothing on invalid command
 
-        	Command_Error();
+        	//Command_Error();
 
             break;
     }
@@ -602,7 +654,7 @@ void Oscillator_2_Command_Handler(int address, int data){
         default:
             // do nothing on invalid command
 
-        	Command_Error();
+        	//Command_Error();
 
             break;
     }
@@ -655,7 +707,7 @@ void Frequency_Modulation_Command_Handler(int address, int data){
         default:
             // do nothing on invalid command
 
-        	Command_Error();
+        	//Command_Error(1);
 
             break;
     }
@@ -669,8 +721,9 @@ void Frequency_Modulation_Command_Handler(int address, int data){
 void Command_Error(){
 
 	for(int i=0; i <6 ; i++){
-		  HAL_GPIO_TogglePin(RED_LED_PORT, RED_LED_PIN);
-		  HAL_Delay(125);
+
+		HAL_GPIO_TogglePin(RED_LED_PORT, RED_LED_PIN);
+		HAL_Delay(125);
 	}
 
 	return;
@@ -679,35 +732,105 @@ void Command_Error(){
 void Command_Success(){
 
 	for(int i=0; i <2 ; i++){
-		  HAL_GPIO_TogglePin(GRN_LED_PORT, GRN_LED_PIN);
-		  HAL_Delay(125);
+
+		HAL_GPIO_TogglePin(GRN_LED_PORT, GRN_LED_PIN);
+		HAL_Delay(125);
 	}
 
 	return;
 }
 
-int Command_Range_Check_ptr(int data, int variable, int max_value, int *returned_value){
+void Command_Response_Handler(int error_check, uint8_t command_byte, uint8_t address_byte, uint8_t data_byte){
 
-	if(data <= max_value){  // check to see if input is valid, ignore invalid value
-		*returned_value = data;
-		return 0;
+	uint8_t return_data[3];
+
+	if(sys.value_returned == 1){ // exit early if response already returned
+        return;
 	}
-	else{
-		*returned_value = variable;
-		//Command_Error();
-		return 1;
+
+    if (error_check == 1) {
+    	memcpy(return_data, "ERR", 3); // report error
+
+    } else if (sys.serial_cmd_echo == 1) { // echo command
+
+        return_data[0] = command_byte;
+        return_data[1] = address_byte;
+        return_data[2] = data_byte;
+
+    } else {
+    	memcpy(return_data, "ACK", 3); // acknowledge input
+
+    }
+
+    CDC_Transmit_FS(return_data, 3); // transmit return message
+
+    if (sys.midi_tx_en == 1) { // send return message if enabled
+        HAL_UART_Transmit(&huart2, return_data, 3, 1000);
+    }
+
+	return;
+}
+
+// check command argument to verify input is valid
+int Command_Error_Check(ErrorCheckType checkType, int data, int max_value, float float_data, float float_max){
+    switch (checkType) {
+        case MAX_RANGE_CHECK:
+
+            return (data <= max_value) ? 0 : 1;
+        case OPTION_BOX_CHECK:
+
+            return (data <= 0 || data > max_value) ? 1 : 0;
+        case NUMBER_CHECK:
+
+            return (data <= '0' || data > max_value + '0') ? 1 : 0;
+        case FLOAT_RANGE_CHECK:
+
+            return (float_data <= float_max) ? 0 : 1;
+        default:
+            return 1; // invalid input value
+    }
+}
+
+// if an error is detected, blink red LED twice, blink green LED once if no error
+void Command_Blink_Status_LED(int error_check){
+
+	if(error_check == 1){
+		sys.red_led_state = 1;
 	}
+	else sys.green_led_state = 1;
+
+	HAL_TIM_Base_Start_IT(&htim6); // start LED timer
 
 }
 
-int Command_Range_Check(int data, int variable, int max_value){
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 
-	if(data <= max_value){  // check to see if input is valid
-		return data;
-	}
-	else{
-		Command_Error();
-		return variable;
+	if(htim == &htim6){
+
+		if(sys.red_led_state == 1){
+
+	        if (sys.blink_counter < 4) {
+	            HAL_GPIO_TogglePin(RED_LED_PORT, RED_LED_PIN);
+	            sys.blink_counter++;
+	        } else {
+	            HAL_TIM_Base_Stop_IT(&htim6); // stop the timer
+	            sys.red_led_state = 0;
+	            sys.blink_counter = 0;
+	        }
+		}
+
+		if(sys.green_led_state == 1){
+
+	        if (sys.blink_counter < 2) {
+	            HAL_GPIO_TogglePin(GRN_LED_PORT, GRN_LED_PIN);
+	            sys.blink_counter++;
+	        } else {
+	            HAL_TIM_Base_Stop_IT(&htim6); // stop the timer
+	            sys.green_led_state = 0;
+	            sys.blink_counter = 0;
+	        }
+		}
+
 	}
 
 }
@@ -728,6 +851,15 @@ int Command_Option_Check_Error(int data, int max_value) {
 
 	// check if the value is outside the valid range or is zero
     if (data <= 0 || data > max_value) {
+        return 1; // value is invalid, return error
+    }
+    return 0; // value is valid
+}
+
+int Command_Number_Check_Error(int data, int max_value) {
+
+	// check if the value is outside the valid range or is zero
+    if (data <= '0' || data > max_value + '0') {
         return 1; // value is invalid, return error
     }
     return 0; // value is valid

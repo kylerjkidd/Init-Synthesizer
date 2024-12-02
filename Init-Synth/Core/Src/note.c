@@ -15,12 +15,8 @@
 
 #include "note.h"
 #include "synth.h"
-
-//#define TAU (2.0 * M_PI)
-//#define NUM_NOTES 88 // Number of keys on a piano
-//#define A4_FREQ 440.0 // Frequency of A4 (in Hz)
-
-//extern int gate;
+#include "midi.h"
+#include "system.h"
 
 // Function to calculate the frequency of a given note
 float Calculate_Frequency(float note_number) {
@@ -80,7 +76,6 @@ int16_t Synthesize_Sawtooth_Wave(float t, float freq){
 int Waveform_Synthesis_Handler(int midi_note, int velocity){
 
     HAL_StatusTypeDef res;
-    //int16_t signal[46876];
     int16_t signal[sample_rate];
     int nsamples = sample_rate;
 
@@ -138,14 +133,18 @@ int Waveform_Synthesis_Handler(int midi_note, int velocity){
         i += 2;
     }
 
-    //while(gate == 1) {
-    	while(1) {
+    while(sys.note_status_bit == 1 ) {
+    	//while(1) {
     	res = HAL_I2S_Transmit(&hi2s2, (uint16_t*)signal, nsamples, 1000);
         if(res != HAL_OK) {
         	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, GPIO_PIN_RESET);
 
             //UART_Printf("I2S - ERROR, res = %d!\r\n", res);
             break;
+        }
+
+        if((sys.midi_data_present == 1)){
+        	MIDI_Decode_Handler();
         }
     }
 

@@ -45,7 +45,7 @@ void DAC_Register_Init(){
 
 	DAC_Register_Write(DAC_REG_HPA_DETECT , 0x03); // analog left/right mixer power on
 
-	DAC_Register_Write(DAC_REG_ANALOG_MIXER , 0x11); // analog mixer close switch 2 and 5
+	DAC_Register_Write(DAC_REG_ANALOG_MIX_SW , 0x11); // analog mixer close switch 2 and 5
 
 	DAC_Register_Write(DAC_REG_DAC_PWR , 0xEC); // enable headphone amplifier
 

@@ -41,26 +41,6 @@ void GPIO_Register_Init(){
 	return;
 }
 
-/*uint8_t GPIO_State_Change(int reg_bank, uint8_t gpio_reg, uint8_t bit_position, bool state){
-
-    if (bit_position > 7) {
-        // return if bit position is out of range for an 8-bit integer
-        return;
-    }
-
-    if (state) {
-        gpio_reg |=  (1 << bit_position); // set the bit
-    } else {
-        gpio_reg &= ~(1 << bit_position); // reset (clear) the bit
-    }
-
-    uint8_t selected_bank = (reg_bank) ? GPIO_OUT_PORT1 : GPIO_OUT_PORT0;
-
-    GPIO_Register_Write(selected_bank, gpio_reg);
-
-    return gpio_reg;
-}*/
-
 uint16_t GPIO_State_Change(int reg_bank, uint16_t gpio_reg, int bit_position, bool state) {
     if (bit_position > 7) {
         return 0xFFFF; // return an error code if bit position is out of range for an 8-bit section
