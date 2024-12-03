@@ -9,16 +9,16 @@
 #define SRC_SYNTH_H_
 
 // gate signal
-#define GATE_PORT 0
-#define GATE_PIN 3
+//#define GATE_PORT 0
+//#define GATE_PIN 3
 
 // toggle polarity of MIDI UART output
-#define MIDI_TX_POL_PORT 0
-#define MIDI_TX_POL_PIN 3
+//#define MIDI_TX_POL_PORT 0
+//#define MIDI_TX_POL_PIN 3
 
 // enable transmit out of MIDI port
-#define MIDI_TX_EN_PORT 0
-#define MIDI_TX_EN_PIN 4
+//#define MIDI_TX_EN_PORT 0
+//#define MIDI_TX_EN_PIN 4
 
 // gate signal
 //#define GATE_PORT GPIOA
@@ -196,7 +196,7 @@ typedef struct {
 
 extern Synth SynthParameters;
 
-void Gate_Control(int gate_state);
+//void Gate_Control(int gate_state);
 
 void Digital_Pot_Wiper_Set(int pot_address, int wiper_code, int invert);
 void Synth_Reset_Initialize();

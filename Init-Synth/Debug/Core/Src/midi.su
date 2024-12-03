@@ -1,2 +1,2 @@
 ../Core/Src/midi.c:16:6:MIDI_Decode_Handler	24	static
-../Core/Src/midi.c:61:6:HAL_UART_RxCpltCallback	16	static
+../Core/Src/midi.c:67:6:HAL_UART_RxCpltCallback	16	static

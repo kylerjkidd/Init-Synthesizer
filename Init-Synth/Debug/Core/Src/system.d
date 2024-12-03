@@ -36,7 +36,15 @@ Core/Src/system.o: ../Core/Src/system.c ../Core/Inc/gpio.h \
  ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_tim_ex.h \
  ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_uart.h \
  ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_uart_ex.h \
- ../Core/Inc/system.h \
+ ../USB_Device/App/usbd_cdc_if.h \
+ ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc/usbd_cdc.h \
+ ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ioreq.h \
+ ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_def.h \
+ ../USB_Device/Target/usbd_conf.h \
+ ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_core.h \
+ ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ioreq.h \
+ ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ctlreq.h \
+ ../Core/Inc/tim.h ../Core/Inc/usart.h ../Core/Inc/system.h \
  C:/Users/Implacable/STM32CubeIDE/workspace_1.15.0/Init-Test-2/Drivers/Audio_DAC/audiodac.h \
  C:/Users/Implacable/STM32CubeIDE/workspace_1.15.0/Init-Test-2/Drivers/GPIO_XPNDR/gpioxpndr.h
 ../Core/Inc/gpio.h:
@@ -78,6 +86,16 @@ Core/Src/system.o: ../Core/Src/system.c ../Core/Inc/gpio.h \
 ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_tim_ex.h:
 ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_uart.h:
 ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_uart_ex.h:
+../USB_Device/App/usbd_cdc_if.h:
+../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc/usbd_cdc.h:
+../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ioreq.h:
+../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_def.h:
+../USB_Device/Target/usbd_conf.h:
+../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_core.h:
+../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ioreq.h:
+../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ctlreq.h:
+../Core/Inc/tim.h:
+../Core/Inc/usart.h:
 ../Core/Inc/system.h:
 C:/Users/Implacable/STM32CubeIDE/workspace_1.15.0/Init-Test-2/Drivers/Audio_DAC/audiodac.h:
 C:/Users/Implacable/STM32CubeIDE/workspace_1.15.0/Init-Test-2/Drivers/GPIO_XPNDR/gpioxpndr.h:

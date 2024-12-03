@@ -45,7 +45,7 @@ Core/Src/serial.o: ../Core/Src/serial.c ../Core/Inc/usart.h \
  ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ioreq.h \
  ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ctlreq.h \
  ../Core/Inc/tim.h ../Core/Inc/synth.h ../Core/Inc/serial.h \
- ../Core/Inc/system.h
+ ../Core/Inc/system.h ../Core/Inc/system.h
 ../Core/Inc/usart.h:
 ../Core/Inc/main.h:
 ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal.h:
@@ -97,4 +97,5 @@ Core/Src/serial.o: ../Core/Src/serial.c ../Core/Inc/usart.h \
 ../Core/Inc/tim.h:
 ../Core/Inc/synth.h:
 ../Core/Inc/serial.h:
+../Core/Inc/system.h:
 ../Core/Inc/system.h:

@@ -2,4 +2,3 @@
 ../Drivers/GPIO_XPNDR/gpioxpndr.c:24:9:GPIO_Register_Read	1
 ../Drivers/GPIO_XPNDR/gpioxpndr.c:33:6:GPIO_Register_Init	1
 ../Drivers/GPIO_XPNDR/gpioxpndr.c:44:10:GPIO_State_Change	6
-../Drivers/GPIO_XPNDR/gpioxpndr.c:79:6:GPIO_Init	1

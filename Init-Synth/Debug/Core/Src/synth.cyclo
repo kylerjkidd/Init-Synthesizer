@@ -1,7 +1,6 @@
 ../Core/Src/synth.c:20:6:Digital_Pot_Wiper_Set	13
 ../Core/Src/synth.c:90:6:Synth_Reset_Initialize	1
 ../Core/Src/synth.c:115:5:Synth_Initialize_Preset	1
-../Core/Src/synth.c:206:6:Gate_Control	1
 ../Core/Src/synth.c:213:6:Mixer_Digital_Pot_Control	1
 ../Core/Src/synth.c:221:6:VCA_Mod_Source_Control	1
 ../Core/Src/synth.c:232:6:VCA_Bypass_Switch_Control	1

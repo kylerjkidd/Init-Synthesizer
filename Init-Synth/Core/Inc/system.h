@@ -19,8 +19,28 @@
 #define TP0_PORT GPIOB
 #define TP0_PIN  GPIO_PIN_5
 
+// gate signal
+#define GATE_PORT 0
+#define GATE_PIN 3
+
+// pin used to re-enumerate USB interface (for debug)
 #define USB_RENUM_PORT GPIOB
 #define USB_RENUM_PIN  GPIO_PIN_5
+
+// toggle polarity of MIDI UART output
+#define MIDI_TX_POL_PORT 0
+#define MIDI_TX_POL_PIN 2
+
+// enable transmit out of MIDI port
+#define MIDI_TX_EN_PORT 0
+#define MIDI_TX_EN_PIN 0
+
+typedef enum {
+    MAX_RANGE_CHECK,
+    OPTION_BOX_CHECK,
+    NUMBER_CHECK,
+    FLOAT_RANGE_CHECK
+} ErrorCheckType;
 
 typedef struct {
 
@@ -51,11 +71,24 @@ typedef struct {
 	// synth controls
 	int gate;
 	int velocity_enable;
+	uint16_t gpio_reg;
 
 } System;
 
 extern System sys;
 
 void System_Reset_Initialize();
+
+void Gate_Control();
+void MIDI_Port_Control();
+
+void Command_Error();
+void Command_Success();
+
+void Command_Response_Handler(int error_check, uint8_t command_byte, uint8_t address_byte, uint8_t data_byte);
+
+int Command_Error_Check(ErrorCheckType checkType, int data, int max_value, float float_data, float float_max);
+
+void Command_Blink_Status_LED(int error_check);
 
 #endif /* INC_SYSTEM_H_ */

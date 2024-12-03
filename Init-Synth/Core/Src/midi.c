@@ -39,12 +39,18 @@ void MIDI_Decode_Handler(){
     	sys.note_status_bit    =  0; // note off
     	sys.midi_note_input    = data_byte1;
     	sys.midi_note_velocity = data_byte2;
+
+    	sys.gate = 0;
+    	Gate_Control();
     	Command_Blink_Status_LED(0); // report no error
     }
     else if(status_byte == 0x90){
     	sys.note_status_bit    =  1; // note on
     	sys.midi_note_input    = data_byte1;
     	sys.midi_note_velocity = data_byte2;
+
+    	sys.gate = 1;
+    	Gate_Control();
     	Command_Blink_Status_LED(0);
     }
     else{

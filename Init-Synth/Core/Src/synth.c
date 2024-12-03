@@ -15,7 +15,7 @@
 extern System sys;
 Synth SynthParameters;// = {10, 3.14};
 
-uint16_t gpio_reg = 0x0000;
+//uint16_t sys.gpio_reg = 0x0000;
 
 void Digital_Pot_Wiper_Set(int pot_address, int wiper_code, int invert){
 
@@ -203,12 +203,12 @@ int Synth_Initialize_Preset(){
 	return 0;
 }
 
-void Gate_Control(int gate_state){
-
-	gpio_reg = GPIO_State_Change(GATE_PORT, gpio_reg, GATE_PIN, gate_state);
-
-	return;
-}
+//void Gate_Control(int gate_state){
+//
+//	sys.gpio_reg = GPIO_State_Change(GATE_PORT, sys.gpio_reg, GATE_PIN, gate_state);
+//
+//	return;
+//}
 
 void Mixer_Digital_Pot_Control(){
 
@@ -221,10 +221,10 @@ void Mixer_Digital_Pot_Control(){
 void VCA_Mod_Source_Control() {
 
     // control CV enable/disable (active low)
-    gpio_reg = GPIO_State_Change(VCA_CV_SW_PORT, gpio_reg, VCA_CV_SW_PIN, SynthParameters.vca_cv_en == 0);
+    sys.gpio_reg = GPIO_State_Change(VCA_CV_SW_PORT, sys.gpio_reg, VCA_CV_SW_PIN, SynthParameters.vca_cv_en == 0);
 
     // select modulation source
-    gpio_reg = GPIO_State_Change(VCA_SEL_PORT, gpio_reg, VCA_SEL_PIN, SynthParameters.vca_cv_sel == 1);
+    sys.gpio_reg = GPIO_State_Change(VCA_SEL_PORT, sys.gpio_reg, VCA_SEL_PIN, SynthParameters.vca_cv_sel == 1);
 
     return;
 }
@@ -232,10 +232,10 @@ void VCA_Mod_Source_Control() {
 void VCA_Bypass_Switch_Control() {
 
     // control VCA bypass switch enable/disable (active low)
-    gpio_reg = GPIO_State_Change(VCA_BYP_SW_PORT, gpio_reg, VCA_BYP_SW_PIN, SynthParameters.vca_output_en == 0);
+    sys.gpio_reg = GPIO_State_Change(VCA_BYP_SW_PORT, sys.gpio_reg, VCA_BYP_SW_PIN, SynthParameters.vca_output_en == 0);
 
     // update output source selection; true = bypass VCA, false = output through VCA
-    gpio_reg = GPIO_State_Change(VCA_BYP_PORT, gpio_reg, VCA_BYP_PIN, SynthParameters.vca_output_sel == 1);
+    sys.gpio_reg = GPIO_State_Change(VCA_BYP_PORT, sys.gpio_reg, VCA_BYP_PIN, SynthParameters.vca_output_sel == 1);
 
     return;
 }
@@ -251,10 +251,10 @@ void VCA_Digital_Pot_Control(){
 void Filter_Mod_Source_Control() {
 
     // control CV enable/disable (active low)
-    gpio_reg = GPIO_State_Change(VCF_CV_SW_PORT, gpio_reg, VCF_CV_SW_PIN, SynthParameters.vcf_cv_en == 0);
+    sys.gpio_reg = GPIO_State_Change(VCF_CV_SW_PORT, sys.gpio_reg, VCF_CV_SW_PIN, SynthParameters.vcf_cv_en == 0);
 
     // select modulation source; true = LFO, false = envelope
-    gpio_reg = GPIO_State_Change(VCF_SEL_PORT, gpio_reg, VCF_SEL_PIN, SynthParameters.vcf_cv_sel == 1);
+    sys.gpio_reg = GPIO_State_Change(VCF_SEL_PORT, sys.gpio_reg, VCF_SEL_PIN, SynthParameters.vcf_cv_sel == 1);
 
     return;
 }
@@ -272,10 +272,10 @@ void Filter_Digital_Pot_Control(){
 void LFO_Output_Control() {
 
     // control LFO output enable/disable (active low)
-    gpio_reg = GPIO_State_Change(LFO_EN_PORT, gpio_reg, LFO_EN_PIN, SynthParameters.lfo_output_en == 0);
+    sys.gpio_reg = GPIO_State_Change(LFO_EN_PORT, sys.gpio_reg, LFO_EN_PIN, SynthParameters.lfo_output_en == 0);
 
     // select LFO output waveform; true = square wave, false = triangle wave
-    gpio_reg = GPIO_State_Change(LFO_SEL_PORT, gpio_reg, LFO_SEL_PIN, SynthParameters.lfo_output_waveform == 1);
+    sys.gpio_reg = GPIO_State_Change(LFO_SEL_PORT, sys.gpio_reg, LFO_SEL_PIN, SynthParameters.lfo_output_waveform == 1);
 
     return;
 }
@@ -290,20 +290,18 @@ void LFO_Digital_Pot_Control(){
 void ENV_Mode_Control() {
 
     // control envelope enable/disable (active low)
-    gpio_reg = GPIO_State_Change(ENV_EN_PORT, gpio_reg, ENV_EN_PIN, SynthParameters.env_en == 0);
+    sys.gpio_reg = GPIO_State_Change(ENV_EN_PORT, sys.gpio_reg, ENV_EN_PIN, SynthParameters.env_en == 0);
 
     // select envelope loop/trigger mode; true = trigger mode, false = loop mode
-    gpio_reg = GPIO_State_Change(ENV_LP_PORT, gpio_reg, ENV_LP_PIN, SynthParameters.env_loop == 0);
+    sys.gpio_reg = GPIO_State_Change(ENV_LP_PORT, sys.gpio_reg, ENV_LP_PIN, SynthParameters.env_loop == 0);
 
     // select envelope inversion mode; true = inverter output, false = non-inverted output
-    gpio_reg = GPIO_State_Change(ENV_POL_PORT, gpio_reg, ENV_POL_PIN, SynthParameters.env_invert == 0);
+    sys.gpio_reg = GPIO_State_Change(ENV_POL_PORT, sys.gpio_reg, ENV_POL_PIN, SynthParameters.env_invert == 0);
 
     return;
 }
 
 void ENV_Digital_Pot_Control(){
-
-	HAL_GPIO_WritePin(TP0_PORT, TP0_PIN, SET); // test point
 
     Digital_Pot_Wiper_Set(8, SynthParameters.env_attack_rate, 0);    // set envelope attack rate
     Digital_Pot_Wiper_Set(9, SynthParameters.env_release_rate, 0);   // set envelop release rate

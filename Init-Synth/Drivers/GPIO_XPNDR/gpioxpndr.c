@@ -75,31 +75,3 @@ uint16_t GPIO_State_Change(int reg_bank, uint16_t gpio_reg, int bit_position, bo
 
     return gpio_reg; // return the modified 16-bit register value
 }
-
-void GPIO_Init(){
-
-	uint8_t i2c_buf[1];
-
-	i2c_buf[0] = GPIO_CFG_PORT0;
-	i2c_buf[1] = 0x00;
-
-	HAL_I2C_Master_Transmit(&hi2c3, GPIO_ADDR, i2c_buf, 2, HAL_MAX_DELAY);
-
-	i2c_buf[0] = GPIO_CFG_PORT1;
-	i2c_buf[1] = 0x00;
-
-	HAL_I2C_Master_Transmit(&hi2c3, GPIO_ADDR, i2c_buf, 2, HAL_MAX_DELAY);
-
-	i2c_buf[0] = GPIO_OUT_PORT0;
-	i2c_buf[1] = 0x03;
-
-	HAL_I2C_Master_Transmit(&hi2c3, GPIO_ADDR, i2c_buf, 2, HAL_MAX_DELAY);
-
-	i2c_buf[0] = GPIO_OUT_PORT1;
-	i2c_buf[1] = 0x00;
-
-	HAL_I2C_Master_Transmit(&hi2c3, GPIO_ADDR, i2c_buf, 2, HAL_MAX_DELAY);
-
-	return;
-
-}

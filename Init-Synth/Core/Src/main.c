@@ -160,7 +160,7 @@ int main(void)
 		  Serial_Command_Handler();
 	  }
 
-	  Gate_Control(sys.note_status_bit == 1 ? 1 : 0);
+	  //Gate_Control();
 
 	  if((sys.note_status_bit == 1)){
 

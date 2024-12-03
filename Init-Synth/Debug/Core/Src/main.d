@@ -50,8 +50,8 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ctlreq.h \
  C:/Users/Implacable/STM32CubeIDE/workspace_1.15.0/Init-Test-2/Drivers/Audio_DAC/audiodac.h \
  C:/Users/Implacable/STM32CubeIDE/workspace_1.15.0/Init-Test-2/Drivers/GPIO_XPNDR/gpioxpndr.h \
- ../Core/Inc/synth.h ../Core/Inc/serial.h ../Core/Inc/midi.h \
- ../Core/Inc/note.h \
+ ../Core/Inc/synth.h ../Core/Inc/serial.h ../Core/Inc/system.h \
+ ../Core/Inc/midi.h ../Core/Inc/note.h \
  C:/Users/Implacable/Documents/GitHub/Init-Synthesizer/Init-Synth/Drivers/EEPROM/eeprom.h \
  ../Core/Inc/system.h
 ../Core/Inc/main.h:
@@ -115,6 +115,7 @@ C:/Users/Implacable/STM32CubeIDE/workspace_1.15.0/Init-Test-2/Drivers/Audio_DAC/
 C:/Users/Implacable/STM32CubeIDE/workspace_1.15.0/Init-Test-2/Drivers/GPIO_XPNDR/gpioxpndr.h:
 ../Core/Inc/synth.h:
 ../Core/Inc/serial.h:
+../Core/Inc/system.h:
 ../Core/Inc/midi.h:
 ../Core/Inc/note.h:
 C:/Users/Implacable/Documents/GitHub/Init-Synthesizer/Init-Synth/Drivers/EEPROM/eeprom.h:

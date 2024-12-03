@@ -21,7 +21,7 @@ extern System sys;
 void Serial_Command_Handler(){
 
     //usb_data_present = 0;
-	int error_check = 0;
+	int error_check = 1;
 	//int sys.value_returned = 0;
 
 	sys.value_returned = 0;
@@ -54,6 +54,11 @@ void Serial_Command_Handler(){
         	error_check = VCA_Command_Handler(address_byte, data_byte);
 
             break;
+        case 'C': // communication settings command
+
+        	error_check = Communication_Command_Handler(address_byte, data_byte);
+
+            break;
         case 'E': // envelope command
 
         	error_check = Envelope_Command_Handler(address_byte, data_byte);
@@ -69,9 +74,9 @@ void Serial_Command_Handler(){
         	error_check = Synth_Initialize_Preset();
 
             break;
-//        case 'L': // load preset command
-//
-//            break;
+        case 'L': // load preset command
+
+            break;
         case 'M': // mixer command
 
         	error_check = Mixer_Command_Handler(address_byte, data_byte);
@@ -98,9 +103,9 @@ void Serial_Command_Handler(){
 			NVIC_SystemReset();
 
             break;
-//        case 'S': // save preset command
-//
-//            break;
+        case 'S': // save preset command
+
+            break;
         case 'X': // oscillator 1 command
 
             break;
@@ -112,8 +117,6 @@ void Serial_Command_Handler(){
             break;
         default:
             // do nothing on invalid command
-
-        	error_check = 1;
 
             break;
     }
@@ -128,11 +131,11 @@ void Serial_Command_Handler(){
 }
 
 // ===========================================================================================================
-// VCA functions
+// A - VCA functions
 
 int VCA_Command_Handler(int address, int data){
 
-	int error_check = 0;
+	int error_check = 1;
 
     switch(address) {
         case '1': // VCA modulation offset
@@ -191,10 +194,10 @@ int VCA_Command_Handler(int address, int data){
         default:
             // do nothing on invalid command
 
-        	return 1;
+        	return error_check;
     }
 
-    return 1;
+    return error_check;
 }
 
 void VCA_Value_Query(int data){
@@ -265,11 +268,57 @@ void VCA_Bypass_Decode(int data){
 }
 
 // ===========================================================================================================
-// envelope functions
+// C - communication settings function
+
+int Communication_Command_Handler(int address, int data){
+
+	int error_check = 1;
+
+    switch(address) {
+        case '1': // echo command/acknowledge response setting; true = echo, false = acknowledge
+
+        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 1, 0, 0);
+
+            if (error_check == 0) {
+            	sys.serial_cmd_echo = data;
+            }
+
+        	return error_check;
+        case '2': // MIDI transmit enable setting; true = enabled, false = disabled
+
+        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 1, 0, 0);
+
+            if (error_check == 0) {
+            	sys.midi_tx_en = data;
+            	MIDI_Port_Control();
+            }
+
+        	return error_check;
+        case '3': // MIDI transmit output polarity setting; true = inverted, false = non-inverted
+
+        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 1, 0, 0);
+
+            if (error_check == 0) {
+            	sys.midi_tx_pol = data;
+            	MIDI_Port_Control();
+            }
+
+        	return error_check;
+        default:
+            // do nothing on invalid command
+
+        	return error_check;
+    }
+
+    return error_check;
+}
+
+// ===========================================================================================================
+// E - envelope functions
 
 int Envelope_Command_Handler(int address, int data){
 
-	int error_check = 0;
+	int error_check = 1;
 
     switch(address) {
         case '1': // envelope attack rate
@@ -327,10 +376,10 @@ int Envelope_Command_Handler(int address, int data){
         default:
             // do nothing on invalid command
 
-        	return 1;
+        	return error_check;
     }
 
-    return 1;
+    return error_check;
 }
 
 void Envelope_Output_Polarity_Decode(int data){
@@ -362,11 +411,11 @@ void Envelope_Loop_Mode_Decode(int data){
 }
 
 // ===========================================================================================================
-// filter functions
+// F - filter functions
 
 int Filter_Command_Handler(int address, int data){
 
-	int error_check = 0;
+	int error_check = 1;
 
     switch(address) {
         case '1': // filter cutoff
@@ -413,10 +462,10 @@ int Filter_Command_Handler(int address, int data){
         default:
             // do nothing on invalid command
 
-        	return 1;
+        	return error_check;
     }
 
-    return 1;
+    return error_check;
 }
 
 void Filter_Mod_Source_Decode(int data){
@@ -443,11 +492,11 @@ void Filter_Mod_Source_Decode(int data){
 }
 
 // ===========================================================================================================
-// mixer function
+// M - mixer function
 
 int Mixer_Command_Handler(int address, int data){
 
-	int error_check = 0;
+	int error_check = 1;
 
     switch(address) {
         case '1': // DAC output level
@@ -482,18 +531,18 @@ int Mixer_Command_Handler(int address, int data){
         default:
             // do nothing on invalid command
 
-        	return 1;
+        	return error_check;
     }
 
-    return 1;
+    return error_check;
 }
 
 // ===========================================================================================================
-// LFO functions
+// O - LFO functions
 
 int LFO_Command_Handler(int address, int data){
 
-	int error_check = 0;
+	int error_check = 1;
 
     switch(address) {
         case '1': // LFO frequency/rate
@@ -520,10 +569,10 @@ int LFO_Command_Handler(int address, int data){
         default:
             // do nothing on invalid command
 
-        	return 1;
+        	return error_check;
     }
 
-    return 1;
+    return error_check;
 }
 
 void LFO_Waveform_Decode(int data){
@@ -550,7 +599,7 @@ void LFO_Waveform_Decode(int data){
 }
 
 // ===========================================================================================================
-// preset function
+// P preset function
 
 int Preset_Command_Handler(int address, int data){
 
@@ -577,7 +626,7 @@ int Preset_Command_Handler(int address, int data){
 }
 
 // ===========================================================================================================
-// oscillator 1 function
+// X - oscillator 1 function
 
 void Oscillator_1_Command_Handler(int address, int data){
 
@@ -620,7 +669,7 @@ void Oscillator_1_Command_Handler(int address, int data){
 }
 
 // ===========================================================================================================
-// oscillator 2 function
+// Y - oscillator 2 function
 
 void Oscillator_2_Command_Handler(int address, int data){
 
@@ -663,7 +712,7 @@ void Oscillator_2_Command_Handler(int address, int data){
 }
 
 // ===========================================================================================================
-// frequency modulation function
+// Z - frequency modulation function
 
 void Frequency_Modulation_Command_Handler(int address, int data){
 
@@ -714,7 +763,7 @@ void Frequency_Modulation_Command_Handler(int address, int data){
 
     return;
 }
-
+/*
 // ===========================================================================================================
 // system functions
 
@@ -833,7 +882,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 
 	}
 
-}
+}*/
 
 int Command_Range_Check_Error(int data, int max_value){
 
