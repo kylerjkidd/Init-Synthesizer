@@ -196,8 +196,6 @@ typedef struct {
 
 extern Synth SynthParameters;
 
-//void Gate_Control(int gate_state);
-
 void Digital_Pot_Wiper_Set(int pot_address, int wiper_code, int invert);
 void Synth_Reset_Initialize();
 
@@ -215,7 +213,7 @@ void VCA_Mod_Source_Control();
 void VCA_Bypass_Switch_Control();
 void VCA_Digital_Pot_Control();
 
-void ENV_Mode_Control();
-void ENV_Digital_Pot_Control();
+void Envelope_Mode_Control();
+void Envelope_Digital_Pot_Control();
 
 #endif /* SRC_SYNTH_H_ */

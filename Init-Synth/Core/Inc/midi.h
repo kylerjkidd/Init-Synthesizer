@@ -12,8 +12,7 @@
 
 extern UART_HandleTypeDef huart2;
 
-void HAL_UART_RxCpltCallback();
-//void MIDI_Decode_Handler(int status_byte, int data_byte1, int data_byte2);
 void MIDI_Decode_Handler();
+void HAL_UART_RxCpltCallback();
 
 #endif /* INC_MIDI_H_ */

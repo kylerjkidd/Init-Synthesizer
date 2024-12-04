@@ -13,9 +13,8 @@
 #include "system.h"
 
 extern System sys;
-Synth SynthParameters;// = {10, 3.14};
 
-//uint16_t sys.gpio_reg = 0x0000;
+Synth SynthParameters;
 
 void Digital_Pot_Wiper_Set(int pot_address, int wiper_code, int invert){
 
@@ -197,8 +196,8 @@ int Synth_Initialize_Preset(){
 	VCA_Bypass_Switch_Control();
 	VCA_Digital_Pot_Control();
 
-	ENV_Mode_Control();
-	ENV_Digital_Pot_Control();
+	Envelope_Mode_Control();
+	Envelope_Digital_Pot_Control();
 
 	return 0;
 }
@@ -287,7 +286,7 @@ void LFO_Digital_Pot_Control(){
     return;
 }
 
-void ENV_Mode_Control() {
+void Envelope_Mode_Control() {
 
     // control envelope enable/disable (active low)
     sys.gpio_reg = GPIO_State_Change(ENV_EN_PORT, sys.gpio_reg, ENV_EN_PIN, SynthParameters.env_en == 0);
@@ -301,7 +300,7 @@ void ENV_Mode_Control() {
     return;
 }
 
-void ENV_Digital_Pot_Control(){
+void Envelope_Digital_Pot_Control(){
 
     Digital_Pot_Wiper_Set(8, SynthParameters.env_attack_rate, 0);    // set envelope attack rate
     Digital_Pot_Wiper_Set(9, SynthParameters.env_release_rate, 0);   // set envelop release rate

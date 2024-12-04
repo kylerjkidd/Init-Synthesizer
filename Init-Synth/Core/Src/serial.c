@@ -20,15 +20,13 @@ extern System sys;
 
 void Serial_Command_Handler(){
 
-    //usb_data_present = 0;
 	int error_check = 1;
-	//int sys.value_returned = 0;
-
-	sys.value_returned = 0;
 
 	int command_byte;
 	int address_byte;
 	int data_byte;
+
+	sys.value_returned = 0;
 
     if(sys.usb_data_present == 1){
     	sys.usb_data_present = 0;
@@ -94,7 +92,7 @@ void Serial_Command_Handler(){
             break;
         case 'R': // reset command
 
-        	for(int i=0; i <4 ; i++){
+        	for(int i=0; i <6 ; i++){
         	HAL_GPIO_TogglePin(GRN_LED_PORT, GRN_LED_PIN);
         	HAL_GPIO_TogglePin(RED_LED_PORT, RED_LED_PIN);
         	HAL_Delay(125);
@@ -121,8 +119,7 @@ void Serial_Command_Handler(){
             break;
     }
 
-    //error_check ? Command_Error() : Command_Success();
-    error_check ? Command_Blink_Status_LED(1) : Command_Blink_Status_LED(0);
+    Command_Blink_Status_LED(error_check);
 
     Command_Response_Handler(error_check, command_byte, address_byte, data_byte);
 
@@ -200,37 +197,6 @@ int VCA_Command_Handler(int address, int data){
     return error_check;
 }
 
-void VCA_Value_Query(int data){
-
-	uint8_t return_data[3] = {'A', data , 0};
-
-    switch(data) {
-        case '1': // VCA modulation offset
-        	return_data[2] = SynthParameters.vca_offset;
-            break;
-        case '2': // VCA modulation intensity
-        	return_data[2] = SynthParameters.vca_cv_intensity;
-            break;
-        case '3': // VCA modulation control
-        	return_data[2] = SynthParameters.vca_mod_source;
-            break;
-        case '4': // VCA signal bypass control
-        	return_data[2] = SynthParameters.vca_bypass;
-            break;
-        default:  // do nothing on invalid command
-
-            break;
-    }
-
-    CDC_Transmit_FS(return_data, 3); // transmit return message
-
-    if (sys.midi_tx_en == 1) { // send return message if enabled
-        HAL_UART_Transmit(&huart2, return_data, 3, 1000);
-    }
-
-	return;
-}
-
 void VCA_Mod_Source_Decode(int data){
 
     switch(data) {
@@ -262,6 +228,37 @@ void VCA_Bypass_Decode(int data){
     else if(data == 1){ // signal bypasses VCA
     	SynthParameters.vca_output_en = 1;
     	SynthParameters.vca_output_sel = 1;
+    }
+
+	return;
+}
+
+void VCA_Value_Query(int data){
+
+	uint8_t return_data[3] = {'A', data , 0};
+
+    switch(data) {
+        case '1': // VCA modulation offset
+        	return_data[2] = SynthParameters.vca_offset;
+            break;
+        case '2': // VCA modulation intensity
+        	return_data[2] = SynthParameters.vca_cv_intensity;
+            break;
+        case '3': // VCA modulation control
+        	return_data[2] = SynthParameters.vca_mod_source;
+            break;
+        case '4': // VCA signal bypass control
+        	return_data[2] = SynthParameters.vca_bypass;
+            break;
+        default:  // do nothing on invalid command
+
+            break;
+    }
+
+    CDC_Transmit_FS(return_data, 3); // transmit return message
+
+    if (sys.midi_tx_en == 1) { // send return message if enabled
+        HAL_UART_Transmit(&huart2, return_data, 3, 1000);
     }
 
 	return;
@@ -323,53 +320,63 @@ int Envelope_Command_Handler(int address, int data){
     switch(address) {
         case '1': // envelope attack rate
 
-        	error_check = Command_Range_Check_Error(data, 255);
+        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 255, 0, 0);
 
             if (error_check == 0) {
                 SynthParameters.env_attack_rate = data;
-                Filter_Digital_Pot_Control();
+                Envelope_Digital_Pot_Control();
             }
 
         	return error_check;
         case '2': // envelope sustain level/decay rate
 
-        	error_check = Command_Range_Check_Error(data, 255);
+        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 255, 0, 0);
 
             if (error_check == 0) {
                 SynthParameters.env_decay_rate = data;
-                Filter_Digital_Pot_Control();
+                Envelope_Digital_Pot_Control();
             }
 
         	return error_check;
         case '3': // envelope release rate
 
-        	error_check = Command_Range_Check_Error(data, 255);
+        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 255, 0, 0);
 
             if (error_check == 0) {
                 SynthParameters.env_release_rate = data;
-                Filter_Digital_Pot_Control();
+                Envelope_Digital_Pot_Control();
             }
 
         	return error_check;
         case '4': // envelope output polarity
 
-        	error_check = Command_Range_Check_Error(data, 1);
+        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 1, 0, 0);
 
             if (error_check == 0) {
                 SynthParameters.env_invert_mode = data;
                 Envelope_Output_Polarity_Decode(SynthParameters.env_invert_mode);
-                ENV_Mode_Control();
+                Envelope_Mode_Control();
             }
 
         	return error_check;
         case '5': // envelope loop mode control
 
-        	error_check = Command_Range_Check_Error(data, 1);
+        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 1, 0, 0);
 
             if (error_check == 0) {
                 SynthParameters.env_loop_mode = data;
                 Envelope_Loop_Mode_Decode(SynthParameters.env_loop_mode);
-                ENV_Mode_Control();
+                Envelope_Mode_Control();
+            }
+
+        	return error_check;
+        case '6': // read back setting value
+
+        	error_check = Command_Error_Check(NUMBER_CHECK, data, 5, 0, 0);
+
+            if (error_check == 0) {
+            	Envelope_Value_Query(data);
+                sys.value_returned = 1; // tell the serial handler a response has been sent
             }
 
         	return error_check;
@@ -410,6 +417,40 @@ void Envelope_Loop_Mode_Decode(int data){
 	return;
 }
 
+void Envelope_Value_Query(int data){
+
+	uint8_t return_data[3] = {'E', data , 0};
+
+    switch(data) {
+        case '1': // envelope attack rate
+        	return_data[2] = SynthParameters.env_attack_rate;
+            break;
+        case '2': // envelope sustain level/decay rate
+        	return_data[2] = SynthParameters.env_decay_rate;
+            break;
+        case '3': // envelope release rate
+        	return_data[2] = SynthParameters.env_release_rate;
+            break;
+        case '4': // envelope output polarity
+        	return_data[2] = SynthParameters.env_invert_mode;
+            break;
+        case '5': // envelope loop mode control
+        	return_data[2] = SynthParameters.env_loop_mode;
+            break;
+        default:  // do nothing on invalid command
+
+            break;
+    }
+
+    CDC_Transmit_FS(return_data, 3); // transmit return message
+
+    if (sys.midi_tx_en == 1) { // send return message if enabled
+        HAL_UART_Transmit(&huart2, return_data, 3, 1000);
+    }
+
+	return;
+}
+
 // ===========================================================================================================
 // F - filter functions
 
@@ -420,7 +461,7 @@ int Filter_Command_Handler(int address, int data){
     switch(address) {
         case '1': // filter cutoff
 
-        	error_check = Command_Range_Check_Error(data, 255);
+        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 255, 0, 0);
 
             if (error_check == 0) {
                 SynthParameters.vcf_cutoff = data;
@@ -430,7 +471,7 @@ int Filter_Command_Handler(int address, int data){
         	return error_check;
         case '2': // filter resonance intensity
 
-        	error_check = Command_Range_Check_Error(data, 255);
+        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 255, 0, 0);
 
             if (error_check == 0) {
                 SynthParameters.vcf_resonance = data;
@@ -440,7 +481,7 @@ int Filter_Command_Handler(int address, int data){
         	return error_check;
         case '3': // filter modulation intensity
 
-        	error_check = Command_Range_Check_Error(data, 255);
+        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 255, 0, 0);
 
             if (error_check == 0) {
                 SynthParameters.vcf_cv_intensity = data;
@@ -450,12 +491,22 @@ int Filter_Command_Handler(int address, int data){
         	return error_check;
         case '4': // filter modulation control
 
-        	error_check = Command_Option_Check_Error(data, 3);
+        	error_check = Command_Error_Check(OPTION_BOX_CHECK, data, 3, 0, 0);
 
             if (error_check == 0) {
                 SynthParameters.vcf_mod_source = data;
                 Filter_Mod_Source_Decode(SynthParameters.vcf_mod_source);
                 Filter_Mod_Source_Control();
+            }
+
+        	return error_check;
+        case '5': // read back setting value
+
+        	error_check = Command_Error_Check(NUMBER_CHECK, data, 4, 0, 0);
+
+            if (error_check == 0) {
+            	Filter_Value_Query(data);
+                sys.value_returned = 1; // tell the serial handler a response has been sent
             }
 
         	return error_check;
@@ -491,6 +542,37 @@ void Filter_Mod_Source_Decode(int data){
 	return;
 }
 
+void Filter_Value_Query(int data){
+
+	uint8_t return_data[3] = {'F', data , 0};
+
+    switch(data) {
+        case '1': // filter cutoff
+        	return_data[2] = SynthParameters.vcf_cutoff;
+            break;
+        case '2': // filter resonance intensity
+        	return_data[2] = SynthParameters.vcf_resonance;
+            break;
+        case '3': // filter modulation intensity
+        	return_data[2] = SynthParameters.vcf_cv_intensity;
+            break;
+        case '4': // filter modulation control
+        	return_data[2] = SynthParameters.vcf_mod_source;
+            break;
+        default:  // do nothing on invalid command
+
+            break;
+    }
+
+    CDC_Transmit_FS(return_data, 3); // transmit return message
+
+    if (sys.midi_tx_en == 1) { // send return message if enabled
+        HAL_UART_Transmit(&huart2, return_data, 3, 1000);
+    }
+
+	return;
+}
+
 // ===========================================================================================================
 // M - mixer function
 
@@ -501,7 +583,7 @@ int Mixer_Command_Handler(int address, int data){
     switch(address) {
         case '1': // DAC output level
 
-        	error_check = Command_Range_Check_Error(data, 255);
+        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 255, 0, 0);
 
             if (error_check == 0) {
                 SynthParameters.dac_mixer_level = data;
@@ -511,7 +593,7 @@ int Mixer_Command_Handler(int address, int data){
         	return error_check;
         case '2': // filter output level
 
-        	error_check = Command_Range_Check_Error(data, 255);
+        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 255, 0, 0);
 
             if (error_check == 0) {
                 SynthParameters.filter_out_level = data;
@@ -521,10 +603,20 @@ int Mixer_Command_Handler(int address, int data){
         	return error_check;
         case '3': // enable/disable MIDI velocity
 
-        	error_check = Command_Range_Check_Error(data, 1);
+        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 1, 0, 0);
 
             if (error_check == 0) {
             	sys.velocity_enable = data;
+            }
+
+        	return error_check;
+        case '4': // read back setting value
+
+        	error_check = Command_Error_Check(NUMBER_CHECK, data, 3, 0, 0);
+
+            if (error_check == 0) {
+            	Mixer_Value_Query(data);
+                sys.value_returned = 1; // tell the serial handler a response has been sent
             }
 
         	return error_check;
@@ -537,6 +629,34 @@ int Mixer_Command_Handler(int address, int data){
     return error_check;
 }
 
+void Mixer_Value_Query(int data){
+
+	uint8_t return_data[3] = {'M', data , 0};
+
+    switch(data) {
+        case '1': // DAC output level
+        	return_data[2] = SynthParameters.dac_mixer_level;
+            break;
+        case '2': // filter output level
+        	return_data[2] = SynthParameters.filter_out_level;
+            break;
+        case '3': // enable/disable MIDI velocity
+        	return_data[2] = sys.velocity_enable;
+            break;
+        default:  // do nothing on invalid command
+
+            break;
+    }
+
+    CDC_Transmit_FS(return_data, 3); // transmit return message
+
+    if (sys.midi_tx_en == 1) { // send return message if enabled
+        HAL_UART_Transmit(&huart2, return_data, 3, 1000);
+    }
+
+	return;
+}
+
 // ===========================================================================================================
 // O - LFO functions
 
@@ -547,7 +667,7 @@ int LFO_Command_Handler(int address, int data){
     switch(address) {
         case '1': // LFO frequency/rate
 
-        	error_check = Command_Range_Check_Error(data, 255);
+        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 255, 0, 0);
 
             if (error_check == 0) {
                 SynthParameters.lfo_frequency = data;
@@ -557,12 +677,22 @@ int LFO_Command_Handler(int address, int data){
         	return error_check;
         case '2': // LFO output waveform
 
-        	error_check = Command_Option_Check_Error(data, 3);
+        	error_check = Command_Error_Check(OPTION_BOX_CHECK, data, 3, 0, 0);
 
             if (error_check == 0) {
                 SynthParameters.lfo_waveform = data;
                 LFO_Waveform_Decode(SynthParameters.lfo_waveform);
                 LFO_Output_Control();
+            }
+
+        	return error_check;
+        case '3': // read back setting value
+
+        	error_check = Command_Error_Check(NUMBER_CHECK, data, 2, 0, 0);
+
+            if (error_check == 0) {
+            	LFO_Value_Query(data);
+                sys.value_returned = 1; // tell the serial handler a response has been sent
             }
 
         	return error_check;
@@ -593,6 +723,31 @@ void LFO_Waveform_Decode(int data){
             // do nothing on invalid command
 
             break;
+    }
+
+	return;
+}
+
+void LFO_Value_Query(int data){
+
+	uint8_t return_data[3] = {'O', data , 0};
+
+    switch(data) {
+        case '1': // LFO frequency/rate
+        	return_data[2] = SynthParameters.lfo_frequency;
+            break;
+        case '2': // LFO output waveform
+        	return_data[2] = SynthParameters.lfo_waveform;
+            break;
+        default:  // do nothing on invalid command
+
+            break;
+    }
+
+    CDC_Transmit_FS(return_data, 3); // transmit return message
+
+    if (sys.midi_tx_en == 1) { // send return message if enabled
+        HAL_UART_Transmit(&huart2, return_data, 3, 1000);
     }
 
 	return;
@@ -763,157 +918,6 @@ void Frequency_Modulation_Command_Handler(int address, int data){
 
     return;
 }
-/*
-// ===========================================================================================================
-// system functions
-
-void Command_Error(){
-
-	for(int i=0; i <6 ; i++){
-
-		HAL_GPIO_TogglePin(RED_LED_PORT, RED_LED_PIN);
-		HAL_Delay(125);
-	}
-
-	return;
-}
-
-void Command_Success(){
-
-	for(int i=0; i <2 ; i++){
-
-		HAL_GPIO_TogglePin(GRN_LED_PORT, GRN_LED_PIN);
-		HAL_Delay(125);
-	}
-
-	return;
-}
-
-void Command_Response_Handler(int error_check, uint8_t command_byte, uint8_t address_byte, uint8_t data_byte){
-
-	uint8_t return_data[3];
-
-	if(sys.value_returned == 1){ // exit early if response already returned
-        return;
-	}
-
-    if (error_check == 1) {
-    	memcpy(return_data, "ERR", 3); // report error
-
-    } else if (sys.serial_cmd_echo == 1) { // echo command
-
-        return_data[0] = command_byte;
-        return_data[1] = address_byte;
-        return_data[2] = data_byte;
-
-    } else {
-    	memcpy(return_data, "ACK", 3); // acknowledge input
-
-    }
-
-    CDC_Transmit_FS(return_data, 3); // transmit return message
-
-    if (sys.midi_tx_en == 1) { // send return message if enabled
-        HAL_UART_Transmit(&huart2, return_data, 3, 1000);
-    }
-
-	return;
-}
-
-// check command argument to verify input is valid
-int Command_Error_Check(ErrorCheckType checkType, int data, int max_value, float float_data, float float_max){
-    switch (checkType) {
-        case MAX_RANGE_CHECK:
-
-            return (data <= max_value) ? 0 : 1;
-        case OPTION_BOX_CHECK:
-
-            return (data <= 0 || data > max_value) ? 1 : 0;
-        case NUMBER_CHECK:
-
-            return (data <= '0' || data > max_value + '0') ? 1 : 0;
-        case FLOAT_RANGE_CHECK:
-
-            return (float_data <= float_max) ? 0 : 1;
-        default:
-            return 1; // invalid input value
-    }
-}
-
-// if an error is detected, blink red LED twice, blink green LED once if no error
-void Command_Blink_Status_LED(int error_check){
-
-	if(error_check == 1){
-		sys.red_led_state = 1;
-	}
-	else sys.green_led_state = 1;
-
-	HAL_TIM_Base_Start_IT(&htim6); // start LED timer
-
-}
-
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
-
-	if(htim == &htim6){
-
-		if(sys.red_led_state == 1){
-
-	        if (sys.blink_counter < 4) {
-	            HAL_GPIO_TogglePin(RED_LED_PORT, RED_LED_PIN);
-	            sys.blink_counter++;
-	        } else {
-	            HAL_TIM_Base_Stop_IT(&htim6); // stop the timer
-	            sys.red_led_state = 0;
-	            sys.blink_counter = 0;
-	        }
-		}
-
-		if(sys.green_led_state == 1){
-
-	        if (sys.blink_counter < 2) {
-	            HAL_GPIO_TogglePin(GRN_LED_PORT, GRN_LED_PIN);
-	            sys.blink_counter++;
-	        } else {
-	            HAL_TIM_Base_Stop_IT(&htim6); // stop the timer
-	            sys.green_led_state = 0;
-	            sys.blink_counter = 0;
-	        }
-		}
-
-	}
-
-}*/
-
-int Command_Range_Check_Error(int data, int max_value){
-
-	// check if the value is outside the valid range
-	if(data <= max_value){
-		return 0; // value is valid, return success
-	}
-	else{
-		return 1; // value is invalid, return error
-	}
-
-}
-
-int Command_Option_Check_Error(int data, int max_value) {
-
-	// check if the value is outside the valid range or is zero
-    if (data <= 0 || data > max_value) {
-        return 1; // value is invalid, return error
-    }
-    return 0; // value is valid
-}
-
-int Command_Number_Check_Error(int data, int max_value) {
-
-	// check if the value is outside the valid range or is zero
-    if (data <= '0' || data > max_value + '0') {
-        return 1; // value is invalid, return error
-    }
-    return 0; // value is valid
-}
-
 
 float Command_Range_Check_Float(float data, float variable, float max_value){
 

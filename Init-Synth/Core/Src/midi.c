@@ -15,8 +15,6 @@
 
 void MIDI_Decode_Handler(){
 
-	//memcpy (midi_buf, rx_buf, temp_buf_index);
-
 	int status_byte = sys.midi_buf[0];
 	int data_byte1  = sys.midi_buf[1];
 	int data_byte2  = sys.midi_buf[2];

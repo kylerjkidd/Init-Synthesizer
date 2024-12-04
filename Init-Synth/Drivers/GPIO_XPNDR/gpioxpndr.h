@@ -23,8 +23,7 @@
 
 void GPIO_Register_Write(uint8_t register_addr, uint8_t data);
 uint8_t GPIO_Register_Read(uint8_t register_addr);
-//uint8_t GPIO_State_Change(int reg_bank, uint8_t gpio_reg, uint8_t bit_position, bool state);
-uint16_t GPIO_State_Change(int reg_bank, uint16_t gpio_reg, int bit_position, bool state);
 void GPIO_Register_Init();
+uint16_t GPIO_State_Change(int reg_bank, uint16_t gpio_reg, int bit_position, bool state);
 
 #endif /* GPIO_XPNDR_GPIOXPNDR_H_ */

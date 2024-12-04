@@ -48,6 +48,8 @@ void System_Reset_Initialize(){
 	sys.velocity_enable = 0;
 	sys.gpio_reg = 0;
 
+	HAL_GPIO_WritePin(RED_LED_PORT, RED_LED_PIN, SET); // red
+
 	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, SET); // enable analog power supply
 
 	DAC_Register_Init();

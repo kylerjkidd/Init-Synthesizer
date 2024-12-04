@@ -1,9 +1,9 @@
 ../Core/Src/system.c:21:6:System_Reset_Initialize	8	static
-../Core/Src/system.c:72:6:Gate_Control	8	static
-../Core/Src/system.c:80:6:MIDI_Port_Control	8	static
-../Core/Src/system.c:91:6:Command_Error	16	static
-../Core/Src/system.c:102:6:Command_Success	16	static
-../Core/Src/system.c:113:6:Command_Response_Handler	24	static
-../Core/Src/system.c:145:5:Command_Error_Check	32	static
-../Core/Src/system.c:165:6:Command_Blink_Status_LED	16	static
-../Core/Src/system.c:176:6:HAL_TIM_PeriodElapsedCallback	16	static
+../Core/Src/system.c:74:6:Gate_Control	8	static
+../Core/Src/system.c:82:6:MIDI_Port_Control	8	static
+../Core/Src/system.c:93:6:Command_Error	16	static
+../Core/Src/system.c:104:6:Command_Success	16	static
+../Core/Src/system.c:115:6:Command_Response_Handler	24	static
+../Core/Src/system.c:147:5:Command_Error_Check	32	static
+../Core/Src/system.c:167:6:Command_Blink_Status_LED	16	static
+../Core/Src/system.c:178:6:HAL_TIM_PeriodElapsedCallback	16	static

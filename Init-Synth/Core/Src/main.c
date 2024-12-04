@@ -127,22 +127,10 @@ int main(void)
 
   Synth_Reset_Initialize();
 
-  //HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, SET); // trigger gate
-  //HAL_Delay(500);
-  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, RESET); // set gate low
-  //HAL_GPIO_WritePin(TP0_PORT, TP0_PIN, SET); // test point
-
-  //HAL_GPIO_WritePin(RED_LED_PORT, RED_LED_PIN, sys.red_led_state); // red
-
-  HAL_GPIO_WritePin(RED_LED_PORT, RED_LED_PIN, SET); // red
-
   HAL_UART_Receive_IT(&huart2, sys.temp_buf , 1); // set up interrupt for MIDI/serial input
-  //HAL_UART_Receive_IT(&huart3, midi_buf, 3);
 
   uint8_t data[] = "INIT-READY\n";
   HAL_UART_Transmit(&huart2, data, 10, 1000);
-
-  //UART_Test();
 
   /* USER CODE END 2 */
 
@@ -167,14 +155,6 @@ int main(void)
 		  Waveform_Synthesis_Handler(sys.midi_note_input, sys.midi_note_velocity);
 	  }
 
-	  //Waveform_Synthesis_Handler(69, 127);
-//
-//	  if(HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13)==1){
-//		  CDC_Transmit_FS((uint8_t *) data, strlen (data));
-//		  HAL_Delay(500);
-//	  }
-
-	  //loop();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
