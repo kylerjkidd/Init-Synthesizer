@@ -16,7 +16,7 @@
 #include "serial.h"
 #include "system.h"
 
-extern System sys;
+//extern System sys;
 
 void Serial_Command_Handler(){
 

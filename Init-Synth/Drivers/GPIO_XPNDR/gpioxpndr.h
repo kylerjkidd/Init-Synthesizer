@@ -10,6 +10,7 @@
 
 #include "stdbool.h"
 
+// EEPROM ADDRESS (8bits)
 #define GPIO_ADDR      0xEE
 
 #define GPIO_IN_PORT0  0x00

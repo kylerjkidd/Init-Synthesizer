@@ -139,6 +139,7 @@ int main(void)
   while (1)
   {
 
+	  Preset_Write(4);
 
 	  if(sys.midi_data_present == 1){
 		  MIDI_Decode_Handler();

@@ -19,6 +19,9 @@
 #define TP0_PORT GPIOB
 #define TP0_PIN  GPIO_PIN_5
 
+#define WRITE_PROTECT_PORT GPIOC
+#define WRITE_PROTECT_PIN  GPIO_PIN_7
+
 // gate signal
 #define GATE_PORT 0
 #define GATE_PIN 3
@@ -52,6 +55,8 @@ typedef struct {
 	int green_led_state;
 	int	red_led_state;
 	int blink_counter;
+	int write_protect;
+	int checksum;
 
 	// communication buffers
 	uint8_t usb_vcp_buffer[64];
@@ -79,8 +84,9 @@ extern System sys;
 
 void System_Reset_Initialize();
 
-void Gate_Control();
+void Write_Protect_Control();
 void MIDI_Port_Control();
+void Gate_Control();
 
 void Command_Error();
 void Command_Success();

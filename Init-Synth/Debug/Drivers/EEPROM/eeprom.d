@@ -36,7 +36,7 @@ Drivers/EEPROM/eeprom.o: ../Drivers/EEPROM/eeprom.c ../Core/Inc/i2c.h \
  ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_tim_ex.h \
  ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_uart.h \
  ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_uart_ex.h \
- ../Drivers/EEPROM/eeprom.h
+ ../Drivers/EEPROM/eeprom.h ../Core/Inc/synth.h ../Core/Inc/system.h
 ../Core/Inc/i2c.h:
 ../Core/Inc/main.h:
 ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal.h:
@@ -77,3 +77,5 @@ Drivers/EEPROM/eeprom.o: ../Drivers/EEPROM/eeprom.c ../Core/Inc/i2c.h \
 ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_uart.h:
 ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_uart_ex.h:
 ../Drivers/EEPROM/eeprom.h:
+../Core/Inc/synth.h:
+../Core/Inc/system.h:

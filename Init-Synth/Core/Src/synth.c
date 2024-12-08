@@ -130,12 +130,12 @@ int Synth_Initialize_Preset(){
 	SynthParameters.note_offset2 = 12;
 	SynthParameters.detune_osc1 = 100;
 	SynthParameters.detune_osc2 = 100;
-	SynthParameters.fm_intensity1 = 0.5;
-	SynthParameters.fm_intensity2 = 0.5;
-	SynthParameters.fm_harmonic1 = 1.0;
-	SynthParameters.fm_harmonic2 = 1.0;
-	SynthParameters.duty_cycle1 = 0.5;
-	SynthParameters.duty_cycle2 = 0.5;
+	SynthParameters.fm_intensity1 = 127;
+	SynthParameters.fm_intensity2 = 127;
+	SynthParameters.fm_harmonic1 = 127;
+	SynthParameters.fm_harmonic2 = 127;
+	SynthParameters.duty_cycle1 = 127;
+	SynthParameters.duty_cycle2 = 127;
 	SynthParameters.volume_osc1 = 100;
 	SynthParameters.volume_osc2 = 100;
 
@@ -177,12 +177,9 @@ int Synth_Initialize_Preset(){
 	SynthParameters.env_invert = 0;
 
 	// envelope timing settings
-	//SynthParameters.env_attack_rate = 0;
 	SynthParameters.env_attack_rate = 127;
 	SynthParameters.env_release_rate = 127;
-	//SynthParameters.env_release_rate = 255;
 	SynthParameters.env_decay_rate = 127;
-	//SynthParameters.env_decay_rate = 0;
 
 	Mixer_Digital_Pot_Control();
 

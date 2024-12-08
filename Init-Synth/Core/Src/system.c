@@ -28,6 +28,8 @@ void System_Reset_Initialize(){
 	sys.green_led_state = 0;
 	sys.red_led_state = 0;
 	sys.blink_counter = 0;
+	sys.write_protect = 0;
+	sys.checksum = 0;
 
 	// communication buffers
 	sys.usb_vcp_buffer[64] = 0;
@@ -62,6 +64,7 @@ void System_Reset_Initialize(){
 
 	GPIO_Register_Init();
 
+	Write_Protect_Control();
 	MIDI_Port_Control();
 	Gate_Control();
 
@@ -71,10 +74,10 @@ void System_Reset_Initialize(){
 // ===========================================================================================================
 // system functions
 
-void Gate_Control(){
+void Write_Protect_Control(){
 
-	// gate control for envelope trigger and LED indicator
-	sys.gpio_reg = GPIO_State_Change(GATE_PORT, sys.gpio_reg, GATE_PIN, sys.gate);
+	// enable or disable write protection for EEPROM (presets)
+	HAL_GPIO_WritePin(WRITE_PROTECT_PORT, WRITE_PROTECT_PIN, sys.write_protect);
 
 	return;
 }
@@ -86,6 +89,14 @@ void MIDI_Port_Control(){
 
 	// toggle polarity of MIDI UART output
 	sys.gpio_reg = GPIO_State_Change(MIDI_TX_POL_PORT, sys.gpio_reg, MIDI_TX_POL_PIN, sys.midi_tx_pol);
+
+	return;
+}
+
+void Gate_Control(){
+
+	// gate control for envelope trigger and LED indicator
+	sys.gpio_reg = GPIO_State_Change(GATE_PORT, sys.gpio_reg, GATE_PIN, sys.gate);
 
 	return;
 }
