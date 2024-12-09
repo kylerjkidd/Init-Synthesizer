@@ -12,6 +12,7 @@
 #include "usbd_cdc_if.h"
 #include "tim.h"
 
+#include "eeprom.h"
 #include "synth.h"
 #include "serial.h"
 #include "system.h"
@@ -181,7 +182,6 @@ int VCA_Command_Handler(int address, int data){
 
         	error_check = Command_Error_Check(NUMBER_CHECK, data, 4, 0, 0);
 
-        	//VCA_Value_Query(data);
             if (error_check == 0) {
             	VCA_Value_Query(data);
                 sys.value_returned = 1; // tell the serial handler a response has been sent
@@ -754,30 +754,43 @@ void LFO_Value_Query(int data){
 }
 
 // ===========================================================================================================
-// P preset function
+// P - preset function
 
 int Preset_Command_Handler(int address, int data){
+
+	int error_check = 1;
 
     switch(address) {
         case '1': // preset save function
 
-        	// preset save function
+        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 4, 0, 0);
 
-        	return 0;
+        	Preset_Write(data);
+
+        	return error_check;
         case '2': // preset load function
 
-        	// preset load function
+        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 4, 0, 0);
 
-        	return 0;
+        	Preset_Read(data);
+
+        	return error_check;
+        case '3': // initialize preset slot
+
+        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 4, 0, 0);
+
+        	Preset_Init(data);
+
+        	return error_check;
         default:
             // do nothing on invalid command
 
         	//Command_Error();
 
-        	return 1;
+        	return error_check;
     }
 
-    return 1;
+    return error_check;
 }
 
 // ===========================================================================================================

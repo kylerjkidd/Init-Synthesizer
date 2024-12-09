@@ -12,6 +12,9 @@
 
 #include "system.h"
 
+// ===========================================================================================================
+// function definitions
+
 void Serial_Command_Handler();
 
 int VCA_Command_Handler(int address, int data);

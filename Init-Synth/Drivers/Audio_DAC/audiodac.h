@@ -34,6 +34,9 @@
 #define DAC_REG_3D_SOUND 		0x5F
 #define DAC_REG_MONO_MIX		0x60
 
+// ===========================================================================================================
+// function definitions
+
 void DAC_Register_Write(uint8_t register_addr, uint8_t data);
 uint8_t DAC_Register_Read(uint8_t register_addr);
 void DAC_Register_Init();

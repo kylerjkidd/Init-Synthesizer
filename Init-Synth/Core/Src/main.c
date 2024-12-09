@@ -132,6 +132,10 @@ int main(void)
   uint8_t data[] = "INIT-READY\n";
   HAL_UART_Transmit(&huart2, data, 10, 1000);
 
+  //Preset_Read(0);
+  //Preset_Init(0);
+  //Preset_Read(0);
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -139,7 +143,10 @@ int main(void)
   while (1)
   {
 
-	  Preset_Write(4);
+	  //Preset_Write(4);
+	  //Preset_Write_test(0);
+
+
 
 	  if(sys.midi_data_present == 1){
 		  MIDI_Decode_Handler();

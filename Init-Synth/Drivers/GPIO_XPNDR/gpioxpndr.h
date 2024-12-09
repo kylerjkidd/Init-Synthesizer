@@ -22,6 +22,9 @@
 #define GPIO_CFG_PORT0 0x06
 #define GPIO_CFG_PORT1 0x07
 
+// ===========================================================================================================
+// function definitions
+
 void GPIO_Register_Write(uint8_t register_addr, uint8_t data);
 uint8_t GPIO_Register_Read(uint8_t register_addr);
 void GPIO_Register_Init();

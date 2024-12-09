@@ -10,6 +10,9 @@
 
 #include "stdint.h"
 
+// ===========================================================================================================
+// pin definitions
+
 #define RED_LED_PORT GPIOA
 #define RED_LED_PIN  GPIO_PIN_10
 
@@ -38,12 +41,24 @@
 #define MIDI_TX_EN_PORT 0
 #define MIDI_TX_EN_PIN 0
 
+// ===========================================================================================================
+// conditional check option declaration
+
 typedef enum {
     MAX_RANGE_CHECK,
     OPTION_BOX_CHECK,
     NUMBER_CHECK,
     FLOAT_RANGE_CHECK
 } ErrorCheckType;
+
+// ===========================================================================================================
+// default values for system settings
+#define SERIAL_CMD_ECHO_DEFAULT     0
+#define MIDI_TX_POL_DEFAULT         0
+#define MIDI_TX_EN_DEFAULT          0
+
+// ===========================================================================================================
+// system parameters struct declaration
 
 typedef struct {
 
@@ -81,6 +96,9 @@ typedef struct {
 } System;
 
 extern System sys;
+
+// ===========================================================================================================
+// function definitions
 
 void System_Reset_Initialize();
 

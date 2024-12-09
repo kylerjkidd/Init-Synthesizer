@@ -8,6 +8,80 @@
 #ifndef SRC_SYNTH_H_
 #define SRC_SYNTH_H_
 
+// ===========================================================================================================
+// default values for SynthParameters
+
+// system settings
+#define VCA_MOD_SOURCE_DEFAULT      1
+#define VCA_BYPASS_DEFAULT          1
+#define VCF_MOD_SOURCE_DEFAULT      1
+#define FM1_ENABLE_DEFAULT          0
+#define FM2_ENABLE_DEFAULT          0
+#define ENV_INVERT_MODE_DEFAULT     0
+#define ENV_LOOP_MODE_DEFAULT       0
+#define LFO_WAVEFORM_DEFAULT        1
+
+// waveform synthesis settings
+#define OSCILLATOR1_DEFAULT         4
+#define OSCILLATOR2_DEFAULT         4
+#define NOTE_OFFSET1_DEFAULT        12
+#define NOTE_OFFSET2_DEFAULT        12
+#define DETUNE_OSC1_DEFAULT         100
+#define DETUNE_OSC2_DEFAULT         100
+#define FM_INTENSITY1_DEFAULT       127
+#define FM_INTENSITY2_DEFAULT       127
+#define FM_HARMONIC1_DEFAULT        127
+#define FM_HARMONIC2_DEFAULT        127
+#define DUTY_CYCLE1_DEFAULT         127
+#define DUTY_CYCLE2_DEFAULT         127
+#define VOLUME_OSC1_DEFAULT         100
+#define VOLUME_OSC2_DEFAULT         100
+
+// mixer output level settings
+#define DAC_MIXER_LEVEL_DEFAULT     127
+#define FILTER_OUT_LEVEL_DEFAULT    127
+
+// filter modulation source settings
+#define VCF_CV_EN_DEFAULT           0
+#define VCF_CV_SEL_DEFAULT          0
+
+// filter digital pot settings
+#define VCF_CV_INTENSITY_DEFAULT    127
+#define VCF_CUTOFF_DEFAULT          127
+#define VCF_RESONANCE_DEFAULT       127
+
+// LFO output settings
+#define LFO_OUTPUT_EN_DEFAULT       0
+#define LFO_OUTPUT_WAVEFORM_DEFAULT 0
+
+// LFO output frequency setting
+#define LFO_FREQUENCY_DEFAULT       127
+
+// VCA modulation source settings
+#define VCA_CV_EN_DEFAULT           0
+#define VCA_CV_SEL_DEFAULT          0
+
+// VCA output enable/bypass settings
+#define VCA_OUTPUT_EN_DEFAULT       1
+#define VCA_OUTPUT_SEL_DEFAULT      1
+
+// VCA modulation source intensity and offset settings
+#define VCA_CV_INTENSITY_DEFAULT    127
+#define VCA_OFFSET_DEFAULT          127
+
+// envelope output settings
+#define ENV_EN_DEFAULT              1
+#define ENV_LOOP_DEFAULT            0
+#define ENV_INVERT_DEFAULT          0
+
+// envelope timing settings
+#define ENV_ATTACK_RATE_DEFAULT     127
+#define ENV_RELEASE_RATE_DEFAULT    127
+#define ENV_DECAY_RATE_DEFAULT      127
+
+// ===========================================================================================================
+// pin definitions
+
 // gate signal
 //#define GATE_PORT 0
 //#define GATE_PIN 3
@@ -121,6 +195,9 @@
 #define ENV_POL_PORT 1
 #define ENV_POL_PIN 3
 
+// ===========================================================================================================
+// synth parameters struct declaration
+
 #pragma pack(push, 1) // ensure no padding between struct members
 typedef struct {
 
@@ -197,6 +274,9 @@ typedef struct {
 
 
 extern Synth SynthParameters;
+
+// ===========================================================================================================
+// function definitions
 
 void Digital_Pot_Wiper_Set(int pot_address, int wiper_code, int invert);
 void Synth_Reset_Initialize();
