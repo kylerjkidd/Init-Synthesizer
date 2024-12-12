@@ -13,10 +13,12 @@
 #include "tim.h"
 
 #include "eeprom.h"
+#include "preset.h"
 #include "synth.h"
 #include "serial.h"
 #include "system.h"
 
+//extern I2C_HandleTypeDef hi2c3;
 //extern System sys;
 
 void Serial_Command_Handler(){
@@ -761,25 +763,67 @@ int Preset_Command_Handler(int address, int data){
 	int error_check = 1;
 
     switch(address) {
-        case '1': // preset save function
+        case '1': // write protect enable/disable
 
-        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 4, 0, 0);
+        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 1, 0, 0);
 
-        	Preset_Write(data);
-
-        	return error_check;
-        case '2': // preset load function
-
-        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 4, 0, 0);
-
-        	Preset_Read(data);
+            if (error_check == 0) {
+            	sys.write_protect = data;
+                Write_Protect_Control();
+            }
 
         	return error_check;
-        case '3': // initialize preset slot
+        case '2': // save current settings to specified preset slot
 
         	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 4, 0, 0);
 
-        	Preset_Init(data);
+        	if (sys.write_protect == 1) {
+        	    error_check = 1;
+        	}
+        	else {
+        		error_check = Preset_Write(data);
+        	}
+
+        	return error_check;
+        case '3': // read and load specified preset slot
+
+        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 4, 0, 0);
+
+            if (error_check == 0) {
+            	error_check = Preset_Read(data);
+            	Preset_Load();
+            }
+
+        	return error_check;
+        case '4': // initialize specified preset slot
+
+        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 4, 0, 0);
+
+        	if (sys.write_protect == 1) {
+        	    error_check = 1;
+        	}
+        	else{
+        		error_check = Preset_Init(data);
+        	}
+
+        	return error_check;
+        case '5': // clear (initialize) all stored presets
+
+        	if (sys.write_protect == 1) {
+        	    error_check = 1;
+        	}
+        	else{
+        		error_check = Preset_Clear();
+        	}
+
+        	return error_check;
+        case '6': // readback current synth and system settings
+
+        	error_check = Synth_Settings_Readback();
+
+            if (error_check == 0) {
+                sys.value_returned = 1; // tell the serial handler a response has been sent
+            }
 
         	return error_check;
         default:

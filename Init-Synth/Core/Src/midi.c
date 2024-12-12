@@ -67,6 +67,11 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 
 	sys.midi_buf[sys.temp_buf_index] = sys.temp_buf[0]; // store the received byte into midi_buf
 
+        // check for reset command input
+		if(sys.temp_buf[0] == 'R'){
+            sys.midi_data_present = 1; // set flag
+		}
+
         // increment the buffer index
         if (++sys.temp_buf_index >= 3)
         {

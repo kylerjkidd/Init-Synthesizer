@@ -1,7 +1,5 @@
-../Drivers/EEPROM/eeprom.c:19:5:Preset_Init	4
-../Drivers/EEPROM/eeprom.c:98:5:Preset_Write	5
-../Drivers/EEPROM/eeprom.c:134:5:Preset_Read	5
-../Drivers/EEPROM/eeprom.c:167:9:XOR_Checksum	2
-../Drivers/EEPROM/eeprom.c:178:9:Readback_Checksum	1
-../Drivers/EEPROM/eeprom.c:188:5:EEPROM_Write_Page	1
-../Drivers/EEPROM/eeprom.c:202:5:EEPROM_Read_Page	1
+../Drivers/EEPROM/eeprom.c:15:9:Readback_Checksum	1
+../Drivers/EEPROM/eeprom.c:25:5:EEPROM_Write_Page	1
+../Drivers/EEPROM/eeprom.c:39:5:EEPROM_Read_Page	1
+../Drivers/EEPROM/eeprom.c:50:5:EEPROM_Write_Byte	1
+../Drivers/EEPROM/eeprom.c:61:5:EEPROM_Read_Byte	1

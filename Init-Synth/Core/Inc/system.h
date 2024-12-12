@@ -71,7 +71,6 @@ typedef struct {
 	int	red_led_state;
 	int blink_counter;
 	int write_protect;
-	int checksum;
 
 	// communication buffers
 	uint8_t usb_vcp_buffer[64];

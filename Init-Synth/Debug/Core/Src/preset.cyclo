@@ -1,0 +1,7 @@
+../Core/Src/preset.c:18:5:Synth_Settings_Readback	3
+../Core/Src/preset.c:43:5:Preset_Init	4
+../Core/Src/preset.c:124:5:Preset_Clear	3
+../Core/Src/preset.c:138:6:Preset_Load	1
+../Core/Src/preset.c:158:5:Preset_Write	5
+../Core/Src/preset.c:197:5:Preset_Read	6
+../Core/Src/preset.c:233:9:XOR_Checksum	2

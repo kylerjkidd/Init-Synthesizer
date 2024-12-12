@@ -12,6 +12,7 @@
 #include "tim.h"
 #include "usart.h"
 
+#include "synth.h"
 #include "system.h"
 #include "audiodac.h"
 #include "gpioxpndr.h"
@@ -29,7 +30,6 @@ void System_Reset_Initialize(){
 	sys.red_led_state = 0;
 	sys.blink_counter = 0;
 	sys.write_protect = 0;
-	sys.checksum = 0;
 
 	// communication buffers
 	sys.usb_vcp_buffer[64] = 0;
@@ -78,6 +78,7 @@ void Write_Protect_Control(){
 
 	// enable or disable write protection for EEPROM (presets)
 	HAL_GPIO_WritePin(WRITE_PROTECT_PORT, WRITE_PROTECT_PIN, sys.write_protect);
+	//HAL_GPIO_WritePin(RED_LED_PORT, RED_LED_PIN, sys.write_protect);
 
 	return;
 }
@@ -97,28 +98,6 @@ void Gate_Control(){
 
 	// gate control for envelope trigger and LED indicator
 	sys.gpio_reg = GPIO_State_Change(GATE_PORT, sys.gpio_reg, GATE_PIN, sys.gate);
-
-	return;
-}
-
-void Command_Error(){
-
-	for(int i=0; i <6 ; i++){
-
-		HAL_GPIO_TogglePin(RED_LED_PORT, RED_LED_PIN);
-		HAL_Delay(125);
-	}
-
-	return;
-}
-
-void Command_Success(){
-
-	for(int i=0; i <2 ; i++){
-
-		HAL_GPIO_TogglePin(GRN_LED_PORT, GRN_LED_PIN);
-		HAL_Delay(125);
-	}
 
 	return;
 }
