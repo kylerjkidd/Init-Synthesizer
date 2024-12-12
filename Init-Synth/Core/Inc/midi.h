@@ -12,6 +12,9 @@
 
 extern UART_HandleTypeDef huart2;
 
+// ===========================================================================================================
+// function definitions
+
 void MIDI_Decode_Handler();
 void HAL_UART_RxCpltCallback();
 

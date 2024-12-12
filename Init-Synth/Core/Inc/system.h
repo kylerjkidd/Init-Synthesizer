@@ -10,6 +10,9 @@
 
 #include "stdint.h"
 
+// ===========================================================================================================
+// pin definitions
+
 #define RED_LED_PORT GPIOA
 #define RED_LED_PIN  GPIO_PIN_10
 
@@ -18,6 +21,9 @@
 
 #define TP0_PORT GPIOB
 #define TP0_PIN  GPIO_PIN_5
+
+#define WRITE_PROTECT_PORT GPIOC
+#define WRITE_PROTECT_PIN  GPIO_PIN_7
 
 // gate signal
 #define GATE_PORT 0
@@ -35,12 +41,24 @@
 #define MIDI_TX_EN_PORT 0
 #define MIDI_TX_EN_PIN 0
 
+// ===========================================================================================================
+// conditional check option declaration
+
 typedef enum {
     MAX_RANGE_CHECK,
     OPTION_BOX_CHECK,
     NUMBER_CHECK,
     FLOAT_RANGE_CHECK
 } ErrorCheckType;
+
+// ===========================================================================================================
+// default values for system settings
+#define SERIAL_CMD_ECHO_DEFAULT     0
+#define MIDI_TX_POL_DEFAULT         0
+#define MIDI_TX_EN_DEFAULT          0
+
+// ===========================================================================================================
+// system parameters struct declaration
 
 typedef struct {
 
@@ -52,6 +70,7 @@ typedef struct {
 	int green_led_state;
 	int	red_led_state;
 	int blink_counter;
+	int write_protect;
 
 	// communication buffers
 	uint8_t usb_vcp_buffer[64];
@@ -77,10 +96,14 @@ typedef struct {
 
 extern System sys;
 
+// ===========================================================================================================
+// function definitions
+
 void System_Reset_Initialize();
 
-void Gate_Control();
+void Write_Protect_Control();
 void MIDI_Port_Control();
+void Gate_Control();
 
 void Command_Error();
 void Command_Success();

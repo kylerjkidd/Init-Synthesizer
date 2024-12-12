@@ -13,6 +13,9 @@
 #define NUM_NOTES 88 // Number of keys on a piano
 #define A4_FREQ 440.0 // Frequency of A4 (in Hz)
 
+// ===========================================================================================================
+// function definitions
+
 float Calculate_Frequency(float note_number);
 
 int16_t Synthesize_Sine_Wave_FM(float t, float freq, float fm_intensity, float fm_harmonic);

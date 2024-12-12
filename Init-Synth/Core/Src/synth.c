@@ -103,9 +103,6 @@ void Synth_Reset_Initialize(){
 	HAL_GPIO_WritePin(CS9_PORT,  CS9_PIN,  SET);
 	HAL_GPIO_WritePin(CS10_PORT, CS10_PIN, SET);
 
-	// set gate low
-	Gate_Control(0);
-
 	Synth_Initialize_Preset();
 
 	return;
@@ -114,75 +111,73 @@ void Synth_Reset_Initialize(){
 int Synth_Initialize_Preset(){
 
 	// system settings
-	SynthParameters.vca_mod_source = 1;
-	SynthParameters.vca_bypass = 1;
-	SynthParameters.vcf_mod_source = 1;
-	SynthParameters.fm1_enable = 0;
-	SynthParameters.fm2_enable = 0;
-	SynthParameters.env_invert_mode = 0;
-	SynthParameters.env_loop_mode = 0;
-	SynthParameters.lfo_waveform = 1;
+	SynthParameters.vca_mod_source      = VCA_MOD_SOURCE_DEFAULT;
+	SynthParameters.vca_bypass          = VCA_BYPASS_DEFAULT;
+	SynthParameters.vcf_mod_source      = VCF_MOD_SOURCE_DEFAULT;
+	SynthParameters.fm1_enable          = FM1_ENABLE_DEFAULT;
+	SynthParameters.fm2_enable          = FM2_ENABLE_DEFAULT;
+	SynthParameters.env_invert_mode     = ENV_INVERT_MODE_DEFAULT;
+	SynthParameters.env_loop_mode       = ENV_LOOP_MODE_DEFAULT;
+	SynthParameters.lfo_waveform        = LFO_WAVEFORM_DEFAULT;
 
 	// waveform synthesis settings
-	SynthParameters.oscillator1 = 4;
-	SynthParameters.oscillator2 = 4;
-	SynthParameters.note_offset1 = 12;
-	SynthParameters.note_offset2 = 12;
-	SynthParameters.detune_osc1 = 100;
-	SynthParameters.detune_osc2 = 100;
-	SynthParameters.fm_intensity1 = 0.5;
-	SynthParameters.fm_intensity2 = 0.5;
-	SynthParameters.fm_harmonic1 = 1.0;
-	SynthParameters.fm_harmonic2 = 1.0;
-	SynthParameters.duty_cycle1 = 0.5;
-	SynthParameters.duty_cycle2 = 0.5;
-	SynthParameters.volume_osc1 = 100;
-	SynthParameters.volume_osc2 = 100;
+	SynthParameters.oscillator1         = OSCILLATOR1_DEFAULT;
+	SynthParameters.oscillator2         = OSCILLATOR2_DEFAULT;
+	SynthParameters.note_offset1        = NOTE_OFFSET1_DEFAULT;
+	SynthParameters.note_offset2        = NOTE_OFFSET2_DEFAULT;
+	SynthParameters.detune_osc1         = DETUNE_OSC1_DEFAULT;
+	SynthParameters.detune_osc2         = DETUNE_OSC2_DEFAULT;
+	SynthParameters.fm_intensity1       = FM_INTENSITY1_DEFAULT;
+	SynthParameters.fm_intensity2       = FM_INTENSITY2_DEFAULT;
+	SynthParameters.fm_harmonic1        = FM_HARMONIC1_DEFAULT;
+	SynthParameters.fm_harmonic2        = FM_HARMONIC2_DEFAULT;
+	SynthParameters.duty_cycle1         = DUTY_CYCLE1_DEFAULT;
+	SynthParameters.duty_cycle2         = DUTY_CYCLE2_DEFAULT;
+	SynthParameters.volume_osc1         = VOLUME_OSC1_DEFAULT;
+	SynthParameters.volume_osc2         = VOLUME_OSC2_DEFAULT;
 
 	// mixer output level settings
-	SynthParameters.dac_mixer_level = 127;
-	SynthParameters.filter_out_level = 127;
+	SynthParameters.dac_mixer_level     = DAC_MIXER_LEVEL_DEFAULT;
+	SynthParameters.filter_out_level    = FILTER_OUT_LEVEL_DEFAULT;
 
 	// filter modulation source settings
-	SynthParameters.vcf_cv_en = 0;
-	SynthParameters.vcf_cv_sel = 0;
+	SynthParameters.vcf_cv_en           = VCF_CV_EN_DEFAULT;
+	SynthParameters.vcf_cv_sel          = VCF_CV_SEL_DEFAULT;
 
 	// filter digital pot settings
-	SynthParameters.vcf_cv_intensity = 127;
-	SynthParameters.vcf_cutoff = 127;
-	SynthParameters.vcf_resonance = 127;
+	SynthParameters.vcf_cv_intensity    = VCF_CV_INTENSITY_DEFAULT;
+	SynthParameters.vcf_cutoff          = VCF_CUTOFF_DEFAULT;
+	SynthParameters.vcf_resonance       = VCF_RESONANCE_DEFAULT;
 
 	// LFO output settings
-	SynthParameters.lfo_output_en = 0;
-	SynthParameters.lfo_output_waveform = 0;
+	SynthParameters.lfo_output_en       = LFO_OUTPUT_EN_DEFAULT;
+	SynthParameters.lfo_output_waveform = LFO_OUTPUT_WAVEFORM_DEFAULT;
 
 	// LFO output frequency setting
-	SynthParameters.lfo_frequency = 127;
+	SynthParameters.lfo_frequency       = LFO_FREQUENCY_DEFAULT;
 
 	// VCA modulation source settings
-	SynthParameters.vca_cv_en = 0;
-	SynthParameters.vca_cv_sel = 0;
+	SynthParameters.vca_cv_en           = VCA_CV_EN_DEFAULT;
+	SynthParameters.vca_cv_sel          = VCA_CV_SEL_DEFAULT;
 
 	// VCA output enable/bypass settings
-	SynthParameters.vca_output_en = 1;
-	SynthParameters.vca_output_sel = 1;
+	SynthParameters.vca_output_en       = VCA_OUTPUT_EN_DEFAULT;
+	SynthParameters.vca_output_sel      = VCA_OUTPUT_SEL_DEFAULT;
 
 	// VCA modulation source intensity and offset settings
-	SynthParameters.vca_cv_intensity = 127;
-	SynthParameters.vca_offset = 127;
+	SynthParameters.vca_cv_intensity    = VCA_CV_INTENSITY_DEFAULT;
+	SynthParameters.vca_offset          = VCA_OFFSET_DEFAULT;
 
 	// envelope output settings
-	SynthParameters.env_en = 1;
-	SynthParameters.env_loop = 0;
-	SynthParameters.env_invert = 0;
+	SynthParameters.env_en              = ENV_EN_DEFAULT;
+	SynthParameters.env_loop            = ENV_LOOP_DEFAULT;
+	SynthParameters.env_invert          = ENV_INVERT_DEFAULT;
 
 	// envelope timing settings
-	//SynthParameters.env_attack_rate = 0;
-	SynthParameters.env_attack_rate = 127;
-	SynthParameters.env_release_rate = 127;
-	//SynthParameters.env_release_rate = 255;
-	SynthParameters.env_decay_rate = 127;
-	//SynthParameters.env_decay_rate = 0;
+	SynthParameters.env_attack_rate     = ENV_ATTACK_RATE_DEFAULT;
+	SynthParameters.env_release_rate    = ENV_RELEASE_RATE_DEFAULT;
+	SynthParameters.env_decay_rate      = ENV_DECAY_RATE_DEFAULT;
+
 
 	Mixer_Digital_Pot_Control();
 
@@ -201,13 +196,6 @@ int Synth_Initialize_Preset(){
 
 	return 0;
 }
-
-//void Gate_Control(int gate_state){
-//
-//	sys.gpio_reg = GPIO_State_Change(GATE_PORT, sys.gpio_reg, GATE_PIN, gate_state);
-//
-//	return;
-//}
 
 void Mixer_Digital_Pot_Control(){
 

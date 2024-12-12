@@ -8,6 +8,80 @@
 #ifndef SRC_SYNTH_H_
 #define SRC_SYNTH_H_
 
+// ===========================================================================================================
+// default values for SynthParameters
+
+// system settings
+#define VCA_MOD_SOURCE_DEFAULT      1
+#define VCA_BYPASS_DEFAULT          1
+#define VCF_MOD_SOURCE_DEFAULT      1
+#define FM1_ENABLE_DEFAULT          0
+#define FM2_ENABLE_DEFAULT          0
+#define ENV_INVERT_MODE_DEFAULT     0
+#define ENV_LOOP_MODE_DEFAULT       0
+#define LFO_WAVEFORM_DEFAULT        1
+
+// waveform synthesis settings
+#define OSCILLATOR1_DEFAULT         4
+#define OSCILLATOR2_DEFAULT         4
+#define NOTE_OFFSET1_DEFAULT        12
+#define NOTE_OFFSET2_DEFAULT        12
+#define DETUNE_OSC1_DEFAULT         100
+#define DETUNE_OSC2_DEFAULT         100
+#define FM_INTENSITY1_DEFAULT       127
+#define FM_INTENSITY2_DEFAULT       127
+#define FM_HARMONIC1_DEFAULT        127
+#define FM_HARMONIC2_DEFAULT        127
+#define DUTY_CYCLE1_DEFAULT         127
+#define DUTY_CYCLE2_DEFAULT         127
+#define VOLUME_OSC1_DEFAULT         100
+#define VOLUME_OSC2_DEFAULT         100
+
+// mixer output level settings
+#define DAC_MIXER_LEVEL_DEFAULT     127
+#define FILTER_OUT_LEVEL_DEFAULT    127
+
+// filter modulation source settings
+#define VCF_CV_EN_DEFAULT           0
+#define VCF_CV_SEL_DEFAULT          0
+
+// filter digital pot settings
+#define VCF_CV_INTENSITY_DEFAULT    127
+#define VCF_CUTOFF_DEFAULT          127
+#define VCF_RESONANCE_DEFAULT       127
+
+// LFO output settings
+#define LFO_OUTPUT_EN_DEFAULT       0
+#define LFO_OUTPUT_WAVEFORM_DEFAULT 0
+
+// LFO output frequency setting
+#define LFO_FREQUENCY_DEFAULT       127
+
+// VCA modulation source settings
+#define VCA_CV_EN_DEFAULT           0
+#define VCA_CV_SEL_DEFAULT          0
+
+// VCA output enable/bypass settings
+#define VCA_OUTPUT_EN_DEFAULT       1
+#define VCA_OUTPUT_SEL_DEFAULT      1
+
+// VCA modulation source intensity and offset settings
+#define VCA_CV_INTENSITY_DEFAULT    127
+#define VCA_OFFSET_DEFAULT          127
+
+// envelope output settings
+#define ENV_EN_DEFAULT              1
+#define ENV_LOOP_DEFAULT            0
+#define ENV_INVERT_DEFAULT          0
+
+// envelope timing settings
+#define ENV_ATTACK_RATE_DEFAULT     127
+#define ENV_RELEASE_RATE_DEFAULT    127
+#define ENV_DECAY_RATE_DEFAULT      127
+
+// ===========================================================================================================
+// pin definitions
+
 // gate signal
 //#define GATE_PORT 0
 //#define GATE_PIN 3
@@ -121,80 +195,88 @@
 #define ENV_POL_PORT 1
 #define ENV_POL_PIN 3
 
+// ===========================================================================================================
+// synth parameters struct declaration
 
+#pragma pack(push, 1) // ensure no padding between struct members
 typedef struct {
 
-	// system settings
-	int vca_mod_source;
-	int vca_bypass;
-	int vcf_mod_source;
-	int fm1_enable;
-	int fm2_enable;
-	int env_invert_mode;
-	int env_loop_mode;
-	int lfo_waveform;
+    // system settings
+    uint8_t vca_mod_source;
+    uint8_t vca_bypass;
+    uint8_t vcf_mod_source;
+    uint8_t fm1_enable;
+    uint8_t fm2_enable;
+    uint8_t env_invert_mode;
+    uint8_t env_loop_mode;
+    uint8_t lfo_waveform;
 
-	// waveform synthesis settings
-	int oscillator1;
-	int oscillator2;
-	int note_offset1;
-	int note_offset2;
-	int detune_osc1;
-	int detune_osc2;
-	float fm_intensity1;
-	float fm_intensity2;
-	float fm_harmonic1;
-	float fm_harmonic2;
-	float duty_cycle1;
-	float duty_cycle2;
-	int volume_osc1;
-	int volume_osc2;
+    // waveform synthesis settings
+    uint8_t oscillator1;
+    uint8_t oscillator2;
+    uint8_t note_offset1;
+    uint8_t note_offset2;
+    uint8_t detune_osc1;
+    uint8_t detune_osc2;
+    uint8_t fm_intensity1;
+    uint8_t fm_intensity2;
+    uint8_t fm_harmonic1;
+    uint8_t fm_harmonic2;
+    uint8_t duty_cycle1;
+    uint8_t duty_cycle2;
+    uint8_t volume_osc1;
+    uint8_t volume_osc2;
 
-	// mixer output level settings
-	int dac_mixer_level;
-	int filter_out_level;
+    // mixer output level settings
+    uint8_t dac_mixer_level;
+    uint8_t filter_out_level;
 
-	// filter modulation source settings
-	int vcf_cv_en;
-	int vcf_cv_sel;
+    // filter modulation source settings
+    uint8_t vcf_cv_en;
+    uint8_t vcf_cv_sel;
 
-	// filter digital pot settings
-	int vcf_cv_intensity;
-	int vcf_cutoff;
-	int vcf_resonance;
+    // filter digital pot settings
+    uint8_t vcf_cv_intensity;
+    uint8_t vcf_cutoff;
+    uint8_t vcf_resonance;
 
-	// LFO output settings
-	int lfo_output_en;
-	int lfo_output_waveform;
+    // LFO output settings
+    uint8_t lfo_output_en;
+    uint8_t lfo_output_waveform;
 
-	// LFO output frequency setting
-	int lfo_frequency;
+    // LFO output frequency setting
+    uint8_t lfo_frequency;
 
-	// VCA modulation source settings
-	int vca_cv_en;
-	int vca_cv_sel;
+    // VCA modulation source settings
+    uint8_t vca_cv_en;
+    uint8_t vca_cv_sel;
 
-	// VCA output enable/bypass settings
-	int vca_output_en;
-	int vca_output_sel;
+    // VCA output enable/bypass settings
+    uint8_t vca_output_en;
+    uint8_t vca_output_sel;
 
-	// VCA modulation source intensity and offset settings
-	int vca_cv_intensity;
-	int vca_offset;
+    // VCA modulation source intensity and offset settings
+    uint8_t vca_cv_intensity;
+    uint8_t vca_offset;
 
-	// envelope output settings
-	int env_en;
-	int env_loop;
-	int env_invert;
+    // envelope output settings
+    uint8_t env_en;
+    uint8_t env_loop;
+    uint8_t env_invert;
 
-	// envelope timing settings
-	int env_attack_rate;
-	int env_release_rate;
-	int env_decay_rate;
+    // envelope timing settings
+    uint8_t env_attack_rate;
+    uint8_t env_release_rate;
+    uint8_t env_decay_rate;
 
 } Synth;
+#pragma pack(pop)
+
 
 extern Synth SynthParameters;
+
+// ===========================================================================================================
+// function definitions
 
 void Digital_Pot_Wiper_Set(int pot_address, int wiper_code, int invert);
 void Synth_Reset_Initialize();

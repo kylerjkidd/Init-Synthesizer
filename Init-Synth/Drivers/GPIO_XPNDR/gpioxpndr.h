@@ -10,6 +10,7 @@
 
 #include "stdbool.h"
 
+// EEPROM ADDRESS (8bits)
 #define GPIO_ADDR      0xEE
 
 #define GPIO_IN_PORT0  0x00
@@ -20,6 +21,9 @@
 #define GPIO_POL_PORT1 0x05
 #define GPIO_CFG_PORT0 0x06
 #define GPIO_CFG_PORT1 0x07
+
+// ===========================================================================================================
+// function definitions
 
 void GPIO_Register_Write(uint8_t register_addr, uint8_t data);
 uint8_t GPIO_Register_Read(uint8_t register_addr);
