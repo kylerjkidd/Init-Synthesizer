@@ -18,8 +18,8 @@
 #include "midi.h"
 #include "system.h"
 
-// Function to calculate the frequency of a given note
-float Calculate_Frequency(float note_number) {
+// function to calculate the frequency of a given note
+float Calculate_Frequency(float note_number){
     return A4_FREQ * powf(2.0, (note_number - 69.0) / 12.0); // MIDI note number for A4 is 69
 }
 
@@ -77,11 +77,19 @@ int Waveform_Synthesis_Handler(int midi_note, int velocity){
 
     HAL_StatusTypeDef res;
     int16_t signal[sample_rate];
-    int nsamples = sample_rate;
+    const int nsamples = sample_rate;
 
-    float freq1 = Calculate_Frequency(midi_note + (SynthParameters.note_offset1 - 12));
-    float freq2 = Calculate_Frequency(midi_note + (SynthParameters.note_offset2 - 12));
-    //int nsamples = sizeof(signal) / sizeof(signal[0]);
+    int offset1   = (SynthParameters.note_offset1 - 12);
+    int offset2   = (SynthParameters.note_offset2 - 12);
+
+    float duty1   = ((float)SynthParameters.duty_cycle1 + 1) / 100;
+    float duty2   = ((float)SynthParameters.duty_cycle2 + 1) / 100;
+
+    float detune1 = ((float)SynthParameters.detune_osc1 - 100) / 100;
+    float detune2 = ((float)SynthParameters.detune_osc2 - 100) / 100;
+
+    float freq1   = Calculate_Frequency(midi_note + offset1 + detune1);
+    float freq2   = Calculate_Frequency(midi_note + offset2 + detune2);
 
     // even indices (signal[i]) represent the left channel of the DAC (Oscillator 1)
     // odd indices  (signal[i+1]) represent the right channel of the DAC (Oscillator 2)

@@ -42,9 +42,8 @@ void LFO_Value_Query(int data);
 
 int Preset_Command_Handler(int address, int data);
 
-void Oscillator_1_Command_Handler(int address, int data);
-void Oscillator_2_Command_Handler(int address, int data);
-
-float Command_Range_Check_Float(float data, float variable, float max_value);
+int Oscillator_1_Command_Handler(int address, int data);
+int Oscillator_2_Command_Handler(int address, int data);
+int Frequency_Modulation_Command_Handler(int address, int data);
 
 #endif /* INC_SERIAL_H_ */

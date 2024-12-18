@@ -75,9 +75,6 @@ void Serial_Command_Handler(){
         	error_check = Synth_Initialize_Preset();
 
             break;
-        case 'L': // load preset command
-
-            break;
         case 'M': // mixer command
 
         	error_check = Mixer_Command_Handler(address_byte, data_byte);
@@ -104,17 +101,20 @@ void Serial_Command_Handler(){
 			NVIC_SystemReset();
 
             break;
-        case 'S': // save preset command
-
-            break;
         case 'X': // oscillator 1 command
+
+            error_check = Oscillator_1_Command_Handler(address_byte, data_byte);
 
             break;
         case 'Y': // oscillator 2 command
 
+            error_check = Oscillator_2_Command_Handler(address_byte, data_byte);
+
             break;
         case 'Z': // FM command
 
+            error_check = Frequency_Modulation_Command_Handler(address_byte, data_byte);
+            
             break;
         default:
             // do nothing on invalid command
@@ -140,7 +140,7 @@ int VCA_Command_Handler(int address, int data){
     switch(address) {
         case '1': // VCA modulation offset
 
-        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 255, 0, 0);
+        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 255);
 
             if (error_check == 0) {
                 SynthParameters.vca_offset = data;
@@ -150,7 +150,7 @@ int VCA_Command_Handler(int address, int data){
         	return error_check;
         case '2': // VCA modulation intensity
 
-        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 255, 0, 0);
+        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 255);
 
             if (error_check == 0) {
                 SynthParameters.vca_cv_intensity = data;
@@ -160,7 +160,7 @@ int VCA_Command_Handler(int address, int data){
         	return error_check;
         case '3': // VCA modulation control
 
-        	error_check = Command_Error_Check(OPTION_BOX_CHECK, data, 3, 0, 0);
+        	error_check = Command_Error_Check(OPTION_BOX_CHECK, data, 3);
 
             if (error_check == 0) {
                 SynthParameters.vca_mod_source = data;
@@ -171,7 +171,7 @@ int VCA_Command_Handler(int address, int data){
         	return error_check;
         case '4': // VCA signal bypass control
 
-        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 1, 0, 0);
+        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 1);
 
             if (error_check == 0) {
                 SynthParameters.vca_bypass = data;
@@ -182,7 +182,7 @@ int VCA_Command_Handler(int address, int data){
         	return error_check;
         case '5': // read back setting value
 
-        	error_check = Command_Error_Check(NUMBER_CHECK, data, 4, 0, 0);
+        	error_check = Command_Error_Check(NUMBER_CHECK, data, 4);
 
             if (error_check == 0) {
             	VCA_Value_Query(data);
@@ -276,7 +276,7 @@ int Communication_Command_Handler(int address, int data){
     switch(address) {
         case '1': // echo command/acknowledge response setting; true = echo, false = acknowledge
 
-        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 1, 0, 0);
+        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 1);
 
             if (error_check == 0) {
             	sys.serial_cmd_echo = data;
@@ -285,7 +285,7 @@ int Communication_Command_Handler(int address, int data){
         	return error_check;
         case '2': // MIDI transmit enable setting; true = enabled, false = disabled
 
-        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 1, 0, 0);
+        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 1);
 
             if (error_check == 0) {
             	sys.midi_tx_en = data;
@@ -295,7 +295,7 @@ int Communication_Command_Handler(int address, int data){
         	return error_check;
         case '3': // MIDI transmit output polarity setting; true = inverted, false = non-inverted
 
-        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 1, 0, 0);
+        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 1);
 
             if (error_check == 0) {
             	sys.midi_tx_pol = data;
@@ -322,7 +322,7 @@ int Envelope_Command_Handler(int address, int data){
     switch(address) {
         case '1': // envelope attack rate
 
-        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 255, 0, 0);
+        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 255);
 
             if (error_check == 0) {
                 SynthParameters.env_attack_rate = data;
@@ -332,7 +332,7 @@ int Envelope_Command_Handler(int address, int data){
         	return error_check;
         case '2': // envelope sustain level/decay rate
 
-        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 255, 0, 0);
+        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 255);
 
             if (error_check == 0) {
                 SynthParameters.env_decay_rate = data;
@@ -342,7 +342,7 @@ int Envelope_Command_Handler(int address, int data){
         	return error_check;
         case '3': // envelope release rate
 
-        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 255, 0, 0);
+        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 255);
 
             if (error_check == 0) {
                 SynthParameters.env_release_rate = data;
@@ -352,7 +352,7 @@ int Envelope_Command_Handler(int address, int data){
         	return error_check;
         case '4': // envelope output polarity
 
-        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 1, 0, 0);
+        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 1);
 
             if (error_check == 0) {
                 SynthParameters.env_invert_mode = data;
@@ -363,7 +363,7 @@ int Envelope_Command_Handler(int address, int data){
         	return error_check;
         case '5': // envelope loop mode control
 
-        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 1, 0, 0);
+        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 1);
 
             if (error_check == 0) {
                 SynthParameters.env_loop_mode = data;
@@ -374,7 +374,7 @@ int Envelope_Command_Handler(int address, int data){
         	return error_check;
         case '6': // read back setting value
 
-        	error_check = Command_Error_Check(NUMBER_CHECK, data, 5, 0, 0);
+        	error_check = Command_Error_Check(NUMBER_CHECK, data, 5);
 
             if (error_check == 0) {
             	Envelope_Value_Query(data);
@@ -463,7 +463,7 @@ int Filter_Command_Handler(int address, int data){
     switch(address) {
         case '1': // filter cutoff
 
-        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 255, 0, 0);
+        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 255);
 
             if (error_check == 0) {
                 SynthParameters.vcf_cutoff = data;
@@ -473,7 +473,7 @@ int Filter_Command_Handler(int address, int data){
         	return error_check;
         case '2': // filter resonance intensity
 
-        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 255, 0, 0);
+        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 255);
 
             if (error_check == 0) {
                 SynthParameters.vcf_resonance = data;
@@ -483,7 +483,7 @@ int Filter_Command_Handler(int address, int data){
         	return error_check;
         case '3': // filter modulation intensity
 
-        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 255, 0, 0);
+        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 255);
 
             if (error_check == 0) {
                 SynthParameters.vcf_cv_intensity = data;
@@ -493,7 +493,7 @@ int Filter_Command_Handler(int address, int data){
         	return error_check;
         case '4': // filter modulation control
 
-        	error_check = Command_Error_Check(OPTION_BOX_CHECK, data, 3, 0, 0);
+        	error_check = Command_Error_Check(OPTION_BOX_CHECK, data, 3);
 
             if (error_check == 0) {
                 SynthParameters.vcf_mod_source = data;
@@ -504,7 +504,7 @@ int Filter_Command_Handler(int address, int data){
         	return error_check;
         case '5': // read back setting value
 
-        	error_check = Command_Error_Check(NUMBER_CHECK, data, 4, 0, 0);
+        	error_check = Command_Error_Check(NUMBER_CHECK, data, 4);
 
             if (error_check == 0) {
             	Filter_Value_Query(data);
@@ -585,7 +585,7 @@ int Mixer_Command_Handler(int address, int data){
     switch(address) {
         case '1': // DAC output level
 
-        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 255, 0, 0);
+        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 255);
 
             if (error_check == 0) {
                 SynthParameters.dac_mixer_level = data;
@@ -595,7 +595,7 @@ int Mixer_Command_Handler(int address, int data){
         	return error_check;
         case '2': // filter output level
 
-        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 255, 0, 0);
+        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 255);
 
             if (error_check == 0) {
                 SynthParameters.filter_out_level = data;
@@ -605,7 +605,7 @@ int Mixer_Command_Handler(int address, int data){
         	return error_check;
         case '3': // enable/disable MIDI velocity
 
-        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 1, 0, 0);
+        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 1);
 
             if (error_check == 0) {
             	sys.velocity_enable = data;
@@ -614,7 +614,7 @@ int Mixer_Command_Handler(int address, int data){
         	return error_check;
         case '4': // read back setting value
 
-        	error_check = Command_Error_Check(NUMBER_CHECK, data, 3, 0, 0);
+        	error_check = Command_Error_Check(NUMBER_CHECK, data, 3);
 
             if (error_check == 0) {
             	Mixer_Value_Query(data);
@@ -669,7 +669,7 @@ int LFO_Command_Handler(int address, int data){
     switch(address) {
         case '1': // LFO frequency/rate
 
-        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 255, 0, 0);
+        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 255);
 
             if (error_check == 0) {
                 SynthParameters.lfo_frequency = data;
@@ -679,7 +679,7 @@ int LFO_Command_Handler(int address, int data){
         	return error_check;
         case '2': // LFO output waveform
 
-        	error_check = Command_Error_Check(OPTION_BOX_CHECK, data, 3, 0, 0);
+        	error_check = Command_Error_Check(OPTION_BOX_CHECK, data, 3);
 
             if (error_check == 0) {
                 SynthParameters.lfo_waveform = data;
@@ -690,7 +690,7 @@ int LFO_Command_Handler(int address, int data){
         	return error_check;
         case '3': // read back setting value
 
-        	error_check = Command_Error_Check(NUMBER_CHECK, data, 2, 0, 0);
+        	error_check = Command_Error_Check(NUMBER_CHECK, data, 2);
 
             if (error_check == 0) {
             	LFO_Value_Query(data);
@@ -765,7 +765,7 @@ int Preset_Command_Handler(int address, int data){
     switch(address) {
         case '1': // write protect enable/disable
 
-        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 1, 0, 0);
+        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 1);
 
             if (error_check == 0) {
             	sys.write_protect = data;
@@ -775,7 +775,7 @@ int Preset_Command_Handler(int address, int data){
         	return error_check;
         case '2': // save current settings to specified preset slot
 
-        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 4, 0, 0);
+        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 4);
 
         	if (sys.write_protect == 1) {
         	    error_check = 1;
@@ -787,7 +787,7 @@ int Preset_Command_Handler(int address, int data){
         	return error_check;
         case '3': // read and load specified preset slot
 
-        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 4, 0, 0);
+        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 4);
 
             if (error_check == 0) {
             	error_check = Preset_Read(data);
@@ -797,7 +797,7 @@ int Preset_Command_Handler(int address, int data){
         	return error_check;
         case '4': // initialize specified preset slot
 
-        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 4, 0, 0);
+        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 4);
 
         	if (sys.write_protect == 1) {
         	    error_check = 1;
@@ -829,8 +829,6 @@ int Preset_Command_Handler(int address, int data){
         default:
             // do nothing on invalid command
 
-        	//Command_Error();
-
         	return error_check;
     }
 
@@ -840,150 +838,192 @@ int Preset_Command_Handler(int address, int data){
 // ===========================================================================================================
 // X - oscillator 1 function
 
-void Oscillator_1_Command_Handler(int address, int data){
+int Oscillator_1_Command_Handler(int address, int data){
+
+	int error_check = 1;
 
     switch(address) {
         case '1': // oscillator semitone offset
 
-        	SynthParameters.note_offset1 = Command_Range_Check(data, SynthParameters.note_offset1, 24);
+        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 24);
 
-            break;
+            if (error_check == 0) {
+            	SynthParameters.note_offset1 = data;
+            }
+
+            return error_check;
         case '2': // oscillator detune
 
-        	SynthParameters.detune_osc1 = Command_Range_Check(data, SynthParameters.detune_osc1, 200);
+        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 255);
 
-            break;
+            if (error_check == 0) {
+            	SynthParameters.detune_osc1 = data;
+            }
+
+            return error_check;
         case '3': // oscillator waveform selection
 
-        	SynthParameters.oscillator1 = Command_Range_Check(data, SynthParameters.oscillator1, 4);
+        	error_check = Command_Error_Check(OPTION_BOX_CHECK, data, 4);
 
-            break;
+            if (error_check == 0) {
+            	SynthParameters.oscillator1 = data;
+            }
+
+            return error_check;
         case '4': // volume setting
 
-        	SynthParameters.volume_osc1 = Command_Range_Check(data, SynthParameters.volume_osc1, 63);
+        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 63);
 
-            break;
+            if (error_check == 0) {
+            	SynthParameters.volume_osc1 = data;
+            }
+
+            return error_check;
         case '5': // duty cycle for PWM waveform
 
-            float temp = (float) data/100;
-        	SynthParameters.duty_cycle1 = Command_Range_Check_Float(temp, SynthParameters.duty_cycle1, 1.0);
+        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 99);
 
-            break;
+            if (error_check == 0) {
+            	SynthParameters.duty_cycle1 = data;
+            }
+
+            return error_check;
         default:
             // do nothing on invalid command
 
-        	//Command_Error();
-
-            break;
+            return error_check;
     }
 
-    return;
+    return error_check;
 }
 
 // ===========================================================================================================
 // Y - oscillator 2 function
 
-void Oscillator_2_Command_Handler(int address, int data){
+int Oscillator_2_Command_Handler(int address, int data){
+
+	int error_check = 1;
 
     switch(address) {
         case '1': // oscillator semitone offset
 
-        	SynthParameters.note_offset2 = Command_Range_Check(data, SynthParameters.note_offset2, 24);
+        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 24);
 
-            break;
+            if (error_check == 0) {
+            	SynthParameters.note_offset2 = data;
+            }
+
+            return error_check;
         case '2': // oscillator detune
 
-        	SynthParameters.detune_osc2 = Command_Range_Check(data, SynthParameters.detune_osc2, 200);
+        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 255);
 
-            break;
+            if (error_check == 0) {
+            	SynthParameters.detune_osc2 = data;
+            }
+
+            return error_check;
         case '3': // oscillator waveform selection
 
-        	SynthParameters.oscillator2 = Command_Range_Check(data, SynthParameters.oscillator2, 4);
+        	error_check = Command_Error_Check(OPTION_BOX_CHECK, data, 4);
 
-            break;
+            if (error_check == 0) {
+            	SynthParameters.oscillator2 = data;
+            }
+
+            return error_check;
         case '4': // volume setting
 
-        	SynthParameters.volume_osc2 = Command_Range_Check(data, SynthParameters.volume_osc2, 63);
+        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 63);
 
-            break;
+            if (error_check == 0) {
+            	SynthParameters.volume_osc2 = data;
+            }
+
+            return error_check;
         case '5': // duty cycle for PWM waveform
 
-            float temp = (float) data/100;
-        	SynthParameters.duty_cycle2 = Command_Range_Check_Float(temp, SynthParameters.duty_cycle2, 1.0);
+        	error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 99);
 
-            break;
+            if (error_check == 0) {
+            	SynthParameters.duty_cycle2 = data;
+            }
+
+            return error_check;
         default:
             // do nothing on invalid command
 
-        	//Command_Error();
-
-            break;
+            return error_check;
     }
 
-    return;
+    return error_check;
 }
 
 // ===========================================================================================================
 // Z - frequency modulation function
 
-void Frequency_Modulation_Command_Handler(int address, int data){
+int Frequency_Modulation_Command_Handler(int address, int data){
 
-	float temp;
+	int error_check = 1;
 
     switch(address) {
         case '1': // oscillator 1 FM intensity
 
-            temp = (float) data/100;
-        	SynthParameters.fm_intensity1 = Command_Range_Check_Float(temp, SynthParameters.fm_intensity1, 1.0);
+            error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 99);
 
-            break;
+            if (error_check == 0) {
+            	SynthParameters.fm_intensity1 = data;
+            }
+
+            return error_check;
         case '2': // oscillator 1 FM harmonic
 
-        	temp = (float) data/100;
-        	SynthParameters.fm_harmonic1 = Command_Range_Check(data, SynthParameters.fm_harmonic1, 200);
+            error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 199);
 
-            break;
+            if (error_check == 0) {
+            	SynthParameters.fm_harmonic1 = data;
+            }
+
+            return error_check;
         case '3': // oscillator 2 FM intensity
 
-            temp = (float) data/100;
-        	SynthParameters.fm_intensity2 = Command_Range_Check_Float(temp, SynthParameters.fm_intensity2, 1.0);
+            error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 99);
 
-            break;
+            if (error_check == 0) {
+            	SynthParameters.fm_intensity2 = data;
+            }
+
+            return error_check;
         case '4': // oscillator 2 FM harmonic
 
-        	temp = (float) data/100;
-        	SynthParameters.fm_harmonic2 = Command_Range_Check(data, SynthParameters.fm_harmonic2, 200);
+            if (error_check == 0) {
+            	SynthParameters.fm_harmonic2 = data;
+            }
 
-            break;
+            return error_check;
         case '5': // oscillator 1 enable
 
-        	SynthParameters.fm1_enable = Command_Range_Check(data, SynthParameters.fm1_enable, 1);
+            error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 1);
 
-            break;
+            if (error_check == 0) {
+            	SynthParameters.fm1_enable = data;
+            }
+
+            return error_check;
         case '6': // oscillator 2 enable
 
-        	SynthParameters.fm2_enable = Command_Range_Check(data, SynthParameters.fm2_enable, 1);
+            error_check = Command_Error_Check(MAX_RANGE_CHECK, data, 1);
 
-            break;
+            if (error_check == 0) {
+            	SynthParameters.fm2_enable = data;
+            }
+
+            return error_check;
         default:
             // do nothing on invalid command
 
-        	//Command_Error(1);
-
-            break;
+            return error_check;
     }
 
-    return;
-}
-
-float Command_Range_Check_Float(float data, float variable, float max_value){
-
-	if(data <= max_value){  // check to see if input is valid
-		return data;
-	}
-	else{
-		Command_Error();
-		return variable;
-	}
-
+    return error_check;
 }

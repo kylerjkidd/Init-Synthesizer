@@ -134,7 +134,7 @@ void Command_Response_Handler(int error_check, uint8_t command_byte, uint8_t add
 }
 
 // check command argument to verify input is valid
-int Command_Error_Check(ErrorCheckType checkType, int data, int max_value, float float_data, float float_max){
+int Command_Error_Check(ErrorCheckType checkType, int data, int max_value){
     switch (checkType) {
         case MAX_RANGE_CHECK:
 
@@ -145,9 +145,6 @@ int Command_Error_Check(ErrorCheckType checkType, int data, int max_value, float
         case NUMBER_CHECK:
 
             return (data <= '0' || data > max_value + '0') ? 1 : 0;
-        case FLOAT_RANGE_CHECK:
-
-            return (float_data <= float_max) ? 0 : 1;
         default:
             return 1; // invalid input value
     }

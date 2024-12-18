@@ -17,6 +17,7 @@
 // function definitions
 
 float Calculate_Frequency(float note_number);
+float Float_From_Ratio(int dividend, int divisor);
 
 int16_t Synthesize_Sine_Wave_FM(float t, float freq, float fm_intensity, float fm_harmonic);
 int16_t Synthesize_Sine_Wave(float t, float freq);

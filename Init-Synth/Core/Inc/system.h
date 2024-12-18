@@ -110,7 +110,7 @@ void Command_Success();
 
 void Command_Response_Handler(int error_check, uint8_t command_byte, uint8_t address_byte, uint8_t data_byte);
 
-int Command_Error_Check(ErrorCheckType checkType, int data, int max_value, float float_data, float float_max);
+int Command_Error_Check(ErrorCheckType checkType, int data, int max_value);
 
 void Command_Blink_Status_LED(int error_check);
 
